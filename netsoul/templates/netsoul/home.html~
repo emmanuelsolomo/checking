@@ -1,0 +1,14 @@
+{% extends "tutorial/layout.html" %}
+{% block content %}
+<div class="jumbotron" style=" margin-top: 100px;height: 400px;">
+  <h1>EPITECH CHECKING SERVICE</h1>
+  <p class="lead">Checking service to share your activity inside the school with EPITECH staff and students</p>
+  {% if user.is_authenticated %}
+    <h4>Welcome {{ user.name }}!</h4>
+    <p>Use the navigation bar at the top of the page to get started.</p>
+  {% else %}
+    <a href="{% url 'signin' %}" class="btn btn-primary btn-large">Click here to sign in</a>
+  {% endif %}
+</div>
+{% endblock %}
+
