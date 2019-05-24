@@ -6,6 +6,7 @@ import datetime
 
 
 class O365User(models.Model):
+    type = models.CharField(max_length=70,blank=False,default='student')
     avatar = models.ImageField(upload_to = 'img/avatars/', default = 'img/avatars/1.jpg')
     name = models.CharField(max_length=70,blank=True)
     email = models.EmailField(max_length=70,blank=True)
