@@ -1,0 +1,24 @@
+<!-- Navbar -->
+<div ng-include="'views/common/navbar.html'" include-replace></div>
+<div class="app-body">
+  <!-- Navigation -->
+  <div ng-include="'views/common/sidebar-nav.html'" include-replace></div>
+  <!-- Main content -->
+  <main class="main">
+    <!-- Breadcrumb -->
+
+    <br>
+    <br>
+    <div class="container-fluid">
+      <ui-view></ui-view>
+    </div>
+    <!-- /.conainer-fluid -->
+  </main>
+
+  <!-- Aside Menu -->
+  <div ng-include="'views/common/aside.html'" include-replace></div>
+
+</div>
+
+<!-- Footer -->
+<div ng-include="'views/common/footer.html'" include-replace></div>

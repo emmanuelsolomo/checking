@@ -1,0 +1,135 @@
+{% extends "netsoul/layout.html" %}
+{% block content %}
+<h1>Activity Log</h1>
+<div style="width:100%;">
+	<div class="chartjs-size-monitor">
+		<div class="chartjs-size-monitor-expand">
+			<div class="">
+			</div>
+		</div>
+		<div class="chartjs-size-monitor-shrink">
+			<div class="">
+			</div>
+		</div>
+	</div>
+	<canvas id="canvas" width="2494" height="1246" class="chartjs-render-monitor" style="display: block; height: 623px; width: 1247px;"></canvas>
+</div>
+<br>
+<br>
+<script>
+		function newDate(days) {
+			return moment().add(days, 'd').toDate();
+		}
+
+		function newDateString(days) {
+			return moment().add(days, 'd').format();
+		}
+
+		var dataPoints = [];
+
+		$.getJSON("/dashboardlogs", ActivityChart);
+
+		function ActivityChart(data) {
+
+		for (var i = 0; i < data.length; i++) {
+				      y = 0
+				      console.log()
+				      if (data[i].active){
+				        y = 1
+				      }
+				      console.log(data[i].timestamp)
+				      console.log(newDate(data[i].timestamp))
+				      dataPoints.push({
+				      x: moment(data[i].timestamp).utcOffset('+0200'),
+				      y: y
+			              });
+		}
+
+		var color = Chart.helpers.color;
+		var config = {
+			type: 'line',
+			data: {
+				datasets: [
+				{
+					label: 'On Site (at Seme City)',
+					backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.blue,
+					fill: true,
+					data: dataPoints
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: false,
+					text: 'Student Activity Log'
+				},
+				plugins: {
+				    datalabels: {
+				      display: false,
+				    },
+				},
+				color: [
+				    'red',    // color for data at index 0
+				    'blue',   // color for data at index 1
+				    'green',  // color for data at index 2
+				    'black'
+				],
+				scales: {
+					xAxes: [{
+						type: 'time',
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Time'
+						},
+						ticks: {
+							major: {
+								fontStyle: 'bold',
+								fontColor: '#FF0000'
+							},
+							callback:  function(value, index, values) {
+				                                   return value;
+							}				                      
+						},
+				                parser: function (date) {
+                                                   return moment(date).utcOffset('+0200');
+				               } 
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'STATUS'
+						},
+						ticks: {
+							major: {
+								fontStyle: 'bold',
+								fontColor: '#FF0000'
+							},
+							callback:  function(value, index, values) {
+				                                  if (value == 0){
+				                                         return 'Inactive';
+				                                  }
+				                                  if (value == 1){
+				                                         return 'Active';
+				                                  }
+							}				                      
+						}
+					}]
+				}
+			}
+		     }
+		     var ctx = document.getElementById('canvas').getContext('2d');
+		     window.myLine = new Chart(ctx, config);
+		}
+
+		window.onload = function() {
+		   
+		};
+
+
+	</script>
+
+{% endblock %}
+

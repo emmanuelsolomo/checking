@@ -1,0 +1,135 @@
+<html lang="en" ng-app="app" class="ng-scope">
+  <head>
+    <style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
+
+  <title>EPITECH COTONOU </title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+  <meta name="author" content="Łukasz Holeczek">
+  <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,AngularJS,Angular,Angular2,Angular 2,Angular4,Angular 4,jQuery,CSS,HTML,RWD,Dashboard,React,React.js,Vue,Vue.js">
+  <link rel="shortcut icon" href="img/favicon.png">
+
+
+  {% load static %}
+  <!-- Main styles for this application 
+  <link rel="stylesheet" href="{% static "netsoul/app.css" %}"> -->
+  <link rel="stylesheet" href="{% static "netsoul/style.css" %}" >
+  <link type="text/css" rel="stylesheet" href="{% static "netsoul/font-awesome.min.css" %}" > 
+  <link type="text/css" rel="stylesheet" href="{% static "netsoul/simple-line-icons.css" %}" >
+
+</head>
+
+<!-- BODY options, add following classes to body to change options
+
+  // Header options
+  1. '.header-fixed'					- Fixed Header
+
+  // Sidebar options
+  1. '.sidebar-fixed'					- Fixed Sidebar
+  2. '.sidebar-hidden'				- Hidden Sidebar
+  3. '.sidebar-off-canvas'		- Off Canvas Sidebar
+  4. '.sidebar-minimized'			- Minimized Sidebar (Only icons)
+  5. '.sidebar-compact'			  - Compact Sidebar
+
+  // Aside options
+  1. '.aside-menu-fixed'			- Fixed Aside Menu
+  2. '.aside-menu-hidden'			- Hidden Aside Menu
+  3. '.aside-menu-off-canvas'	- Off Canvas Aside Menu
+
+  // Breadcrumb options
+  1. '.breadcrumb-fixed'			- Fixed Breadcrumb
+
+  // Footer options
+  1. 'footer-fixed'						- Fixed footer
+
+-->
+
+<body class="header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+  <script id="__bs_script__">//<![CDATA[
+    document.write("<script async src='/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
+//]]></script>
+<script async="" src="/browser-sync/browser-sync-client.js?v=2.23.6"></script>
+
+
+  <!-- User Interface -->
+  <!-- uiView: --><ui-view class="app ng-scope"><!-- uiView: --><ui-view class="ng-scope">
+  <div class="app flex-row align-items-center ng-scope">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card-group">
+          <div class="card p-4">
+            <div class="card-body">
+              <h1>Login</h1>
+              <p class="text-muted">Sign In to your account</p>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="icon-user"></i></span>
+                </div>
+                <input type="text" class="form-control" placeholder="Username">
+              </div>
+              <div class="input-group mb-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="icon-lock"></i></span>
+                </div>
+                <input type="password" class="form-control" placeholder="Password">
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <button type="button" class="btn btn-primary px-4">Login</button>
+                </div>
+                <div class="col-6 text-right">
+                  <button type="button" class="btn btn-link px-0">Forgot password?</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
+            <div class="card-body text-center">
+              <div>
+                <h2>Connect with Office365</h2>
+                <div class="login-student">
+                  <a href="{% url 'signin' %}" title="Connect with Office365">
+                    <img src="{% static "img/office365.jpg" %}" class="" style="height: 80px;" alt="office365">
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></ui-view></ui-view>
+
+  <!-- Bootstrap and necessary plugins -->
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <!-- AngularJS -->
+  <script src="node_modules/angular/angular.min.js"></script>
+
+  <!-- AngularJS plugins -->
+  <script src="node_modules/angular-animate/angular-animate.min.js"></script>
+  <script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+  <script src="node_modules/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
+  <script src="node_modules/oclazyload/dist/ocLazyLoad.min.js"></script>
+  <script src="node_modules/angular-breadcrumb/dist/angular-breadcrumb.min.js"></script>
+  <script src="node_modules/angular-loading-bar/build/loading-bar.min.js"></script>
+
+  <!-- AngularJS CoreUI App scripts -->
+
+  <script src="js/app.js"></script>
+
+  <script src="js/routes.js"></script>
+
+  <script src="js/demo/routes.js"></script>
+
+  <script src="js/controllers.js"></script>
+  <script src="js/directives.js"></script>
+
+
+</body></html>

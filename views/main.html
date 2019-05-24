@@ -1,0 +1,205 @@
+<div class="animated fadeIn">
+
+  <div class="row">
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-primary" ng-controller="cardChartCtrl1">
+        <div class="card-body pb-0">
+          <div class="btn-group float-right">
+
+          </div>
+          <h4 class="mb-0">9.823</h4>
+          <p>Tek1 online</p>
+        </div>
+        <div class="chart-wrapper px-3" style="height:70px;">
+          <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-options="options" chart-colors="colors" height="70"></canvas>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-info" ng-controller="cardChartCtrl2">
+        <div class="card-body pb-0">
+          <h4 class="mb-0">9.823</h4>
+          <p>Tek2 online</p>
+        </div>
+        <div class="chart-wrapper px-3" style="height:70px;">
+          <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-options="options" chart-colors="colors" height="70"></canvas>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-warning" ng-controller="cardChartCtrl3">
+        <div class="card-body pb-0">
+          <div class="btn-group float-right">
+
+          </div>
+          <h4 class="mb-0">9.823</h4>
+          <p>Tek3 online</p>
+        </div>
+        <div class="chart-wrapper" style="height:70px;">
+          <canvas class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-options="options" chart-colors="colors" height="70"></canvas>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="card text-white bg-danger" ng-controller="cardChartCtrl4">
+        <div class="card-body pb-0">
+          <div class="btn-group float-right">
+
+          </div>
+          <h4 class="mb-0">9.823</h4>
+          <p>Staff online</p>
+        </div>
+        <div class="chart-wrapper px-3" style="height:70px;">
+          <canvas class="chart chart-bar" chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors" height="70"></canvas>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+
+  <div class="card" ng-controller="trafficDemoCtrl">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-5">
+          <h4 class="card-title mb-0">NetSoul</h4>
+          <div class="small text-muted"> {{ date }} </div>
+        </div>
+        <!--/.col-->
+        <div class="col-sm-7 d-none d-md-block">
+          <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+            <label class="btn btn-outline-secondary active">
+              <input type="radio" name="options" id="option1" autocomplete="off"> Day
+            </label>
+            <label class="btn btn-outline-secondary ">
+              <input type="radio" name="options" id="option2" autocomplete="off" checked> Week
+            </label>
+            <label class="btn btn-outline-secondary">
+              <input type="radio" name="options" id="option3" autocomplete="off"> Month
+            </label>
+          </div>
+        </div>
+        <!--/.col-->
+      </div>
+      <!--/.row-->
+      <div class="chart-wrapper" style="height:300px;margin-top:40px;">
+        <!--/<canvas class="chart chart-line" chart-data="dataPoints" chart-labels="labelsX" chart-legend="false" chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors" height="300"></canvas>
+        -->
+        <canvas class="chart chart-line" chart-data="dataValue" chart-labels="dataLabels" chart-legend="false" chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors" height="300"></canvas>
+
+      </div>
+    </div>
+    <div class="card-footer">
+
+    </div>
+  </div>
+  <!--/.card-->
+
+  <div class="row" ng-controller="socialBoxCtrl">
+    <div class="col-sm-6 col-lg-3">
+
+      <!--/.social-box-->
+    </div>
+    <!--/.col-->
+
+    <div class="col-sm-6 col-lg-3">
+      <!--/.social-box-->
+    </div>
+    <!--/.col-->
+
+    <div class="col-sm-6 col-lg-3">
+
+      <!--/.social-box-->
+    </div>
+    <!--/.col-->
+
+    <div class="col-sm-6 col-lg-3">
+      <!--/.social-box-->
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+
+          <table class="table table-hover table-outline mb-0 hidden-sm-down">
+            <thead class="thead-light">
+              <tr>
+                <th class="text-center"><i class="icon-people"></i></th>
+                <th>User</th>
+                <th class="text-center">Country</th>
+                <th>Class</th>
+                <th class="text-center">Payment Method</th>
+                <th>Activity</th>
+              </tr>
+            </thead>
+            <tbody ng-controller="usersTableCtrl">
+              <tr ng-repeat="user in users">
+                <td class="text-center">
+                  <div class="avatar">
+                    <img ng-src="img/avatars/{{ user.avatar }}" class="img-avatar" alt="admin@bootstrapmaster.com">
+                    <span class="avatar-status" ng-class="{ 'badge-success' : user.status == 'active',
+                    'badge-warning' : user.status == 'away',
+                    'badge-danger'  : user.status == 'busy',
+                    'badge-secondary' : user.status == 'offline' }"></span>
+                  </div>
+                </td>
+                <td>
+                  <div>{{ user.name }}</div>
+                  <div class="small text-muted">
+                    <span ng-if="user.new == true">New</span>
+                    <span ng-if="user.new == false">Recurring</span>
+                    | Registered: {{ user.registered }}</div>
+                </td>
+                <td class="text-center">
+                  <i class="h4 mb-0 flag-icon flag-icon-{{ user.flag }}" title="{{ user.flag }}" id="{{ user.flag }}"></i>
+                </td>
+                <td>
+                  <div class="clearfix">
+                    <div class="float-left">
+                      <strong>{{ user.usage }}%</strong>
+                    </div>
+                    <div class="float-right">
+                      <small class="text-muted">{{ user.period }}</small>
+                    </div>
+                  </div>
+                  <div class="progress progress-xs">
+                    <div class="progress-bar" ng-class="{ 'bg-info'    : user.usage <= 25,
+                      'bg-success' : user.usage > 25 && user.usage <= 50,
+                      'bg-warning' : user.usage > 50 && user.usage <= 75,
+                      'bg-danger'  : user.usage > 75 && user.usage <= 100 }" value="{{ user.usage }}" role="progressbar" style="width: {{ user.usage }}%" aria-valuenow="{{ user.usage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <i class="fa" ng-class="{ 'fa-cc-mastercard' : user.payment == 'mastercard',
+                    'fa-cc-visa' : user.payment == 'visa',
+                    'fa-cc-amex' : user.payment == 'amex',
+                    'fa-cc-diners-club' : user.payment == 'diners',
+                    'fa-cc-stripe' : user.payment == 'stripe',
+                    'fa-paypal' : user.payment == 'paypal',
+                    'fa-google-wallet' : user.payment == 'google' }" style="font-size:24px"></i>
+                </td>
+                <td>
+                  <div class="small text-muted">Last login</div>
+                  <strong>{{ user.activity }}</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+
+</div>
