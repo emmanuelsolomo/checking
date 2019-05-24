@@ -66,6 +66,9 @@ def initialize_context(request):
 
 def home(request):
   context = initialize_context(request)
+  print("User requesting home/login page ")
+  if 'user' in request.session:
+    return HttpResponseRedirect(reverse('dashboard'))
 
   return render(request, 'netsoul/home.html', context)
   # Temporary!
@@ -101,7 +104,7 @@ def callback(request):
   if serializer.is_valid():
     serializer.save()
   print("Signed In")    
-  return HttpResponseRedirect(reverse('home'))
+  return HttpResponseRedirect(reverse('dashboard'))
 
 def sign_out(request):
   # Clear out the user and token
@@ -160,6 +163,7 @@ def nslog(request):
           remove_user_and_token(request)
           return HttpResponseRedirect(reverse('home'))
         else:
+          print("User in Session already")
           user = request.session['user']['email']
           data = dict(user=user,timestamp=logtime,ip=ip,active=True)
           nslogs = NsLog.objects.filter(user=user,date=datetime.date.today())

@@ -1,25 +1,53 @@
-<!DOCTYPE html>
-<html>
+<html lang="en" ng-app="app" class="ng-scope">
   <head>
-    <title>EPITECH COTONOU </title>
+    <style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-      integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
-      integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-    {% load static %}
-    <link rel="stylesheet" href="{% static "netsoul/app.css" %}">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-    <script src="https://www.chartjs.org/dist/2.8.0/Chart.min.js"></script>
-    <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
-  </head>
+  <title>EPITECH COTONOU </title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+  <meta name="author" content="Łukasz Holeczek">
+  <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,AngularJS,Angular,Angular2,Angular 2,Angular4,Angular 4,jQuery,CSS,HTML,RWD,Dashboard,React,React.js,Vue,Vue.js">
+  <link rel="shortcut icon" href="img/favicon.png">
 
-  <body>
+
+  {% load static %}
+  <!-- Main styles for this application 
+  <link rel="stylesheet" href="{% static "netsoul/app.css" %}"> -->
+  <link rel="stylesheet" href="{% static "netsoul/style.css" %}" >
+  <link type="text/css" rel="stylesheet" href="{% static "netsoul/font-awesome.min.css" %}" > 
+  <link type="text/css" rel="stylesheet" href="{% static "netsoul/simple-line-icons.css" %}" >
+
+</head>
+
+<!-- BODY options, add following classes to body to change options
+
+  // Header options
+  1. '.header-fixed'					- Fixed Header
+
+  // Sidebar options
+  1. '.sidebar-fixed'					- Fixed Sidebar
+  2. '.sidebar-hidden'				- Hidden Sidebar
+  3. '.sidebar-off-canvas'		- Off Canvas Sidebar
+  4. '.sidebar-minimized'			- Minimized Sidebar (Only icons)
+  5. '.sidebar-compact'			  - Compact Sidebar
+
+  // Aside options
+  1. '.aside-menu-fixed'			- Fixed Aside Menu
+  2. '.aside-menu-hidden'			- Hidden Aside Menu
+  3. '.aside-menu-off-canvas'	- Off Canvas Aside Menu
+
+  // Breadcrumb options
+  1. '.breadcrumb-fixed'			- Fixed Breadcrumb
+
+  // Footer options
+  1. 'footer-fixed'						- Fixed footer
+
+-->
+
+<body class="header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+
     {% if user.is_authenticated %}
     <script>
 
@@ -42,51 +70,18 @@
       var interval = setInterval(myFunction, 600000);
 
     </script>
-    {% endif %}    
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <div class="container">
-	<a href="#epitech" data-elementor-open-lightbox="">
-	  <img width="300" height="109" src="{% static "netsoul/img/logo_epitech_futur_informatique.png" %}" class="attachment-medium size-medium" alt="" sizes="100vw" style=" height: 50px;width: 100px;"></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav mr-auto">
-            {% if user.is_authenticated %}
-              <li class="nav-item" data-turbolinks="false">
-                <a class="nav-link{% if request.resolver_match.view_name == 'dashboard' %} active{% endif %}" href="{% url 'dashboard' %}">DASHBOARD</a>
-              </li>
-            {% endif %}
-          </ul>
-          <ul class="navbar-nav justify-content-end">
+    {% endif %} 
+    
 
-            {% if user.is_authenticated %}
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                  {% if user.avatar %}
-                    <img src="{{ user.avatar }}" class="rounded-circle align-self-center mr-2" style="width: 32px;">
-                  {% else %}
-                    <i class="far fa-user-circle fa-lg rounded-circle align-self-center mr-2" style="width: 32px;"></i>
-                  {% endif %}
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <h5 class="dropdown-item-text mb-0">{{ user.name }}</h5>
-                  <p class="dropdown-item-text text-muted mb-0">{{ user.email }}</p>
-                  <div class="dropdown-divider"></div>
-                  <a href="{% url 'signout' %}" class="dropdown-item">Sign Out</a>
-                </div>
-              </li>
-            {% else %}
-              <li class="nav-item">
-		<a href="{% url 'signin' %}" class="nav-link">Sign In</a>
-              </li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <main role="main" class="container" style=" margin-top: 100px;">
+  <script id="__bs_script__">//<![CDATA[
+    document.write("<script async src='/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
+//]]></script>
+<script async="" src="/browser-sync/browser-sync-client.js?v=2.23.6"></script>
+
+
+  <!-- User Interface -->
+ 
+  <main role="main" class="container" style=" margin-top: 100px;">
       {% if errors %}
         {% for error in errors %}
           <div class="alert alert-danger" role="alert">
@@ -98,6 +93,34 @@
         {% endfor %}
       {% endif %}
       {% block content %}{% endblock %}
-    </main>
-  </body>
-</html>
+  </main>
+
+  <!-- Bootstrap and necessary plugins -->
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <!-- AngularJS -->
+  <script src="node_modules/angular/angular.min.js"></script>
+
+  <!-- AngularJS plugins -->
+  <script src="node_modules/angular-animate/angular-animate.min.js"></script>
+  <script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+  <script src="node_modules/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
+  <script src="node_modules/oclazyload/dist/ocLazyLoad.min.js"></script>
+  <script src="node_modules/angular-breadcrumb/dist/angular-breadcrumb.min.js"></script>
+  <script src="node_modules/angular-loading-bar/build/loading-bar.min.js"></script>
+
+  <!-- AngularJS CoreUI App scripts -->
+
+  <script src="js/app.js"></script>
+
+  <script src="js/routes.js"></script>
+
+  <script src="js/demo/routes.js"></script>
+
+  <script src="js/controllers.js"></script>
+  <script src="js/directives.js"></script>
+
+
+</body></html>

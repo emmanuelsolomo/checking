@@ -126,6 +126,26 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    '/static/',
+    '/node_modules/',
+)
+NODE_MODULE_URL='/node_modules/'
+NODE_MODULE_ROOT= os.path.join(BASE_DIR, 'node_modules')
+
+JS_URL='/js/'
+JS_ROOT= os.path.join(BASE_DIR, 'js')
+
+VIEWS_URL='/views/'
+VIEWS_ROOT= os.path.join(BASE_DIR, 'views')
+
+IMG_URL='/img/'
+IMG_ROOT= os.path.join(BASE_DIR, 'img')
+
+CSS_URL='/css/'
+CSS_ROOT= os.path.join(BASE_DIR, 'css')
 
 CORS_ORIGIN_ALLOW_ALL = True
