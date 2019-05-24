@@ -6,13 +6,19 @@ import datetime
 
 
 class O365User(models.Model):
-    email = models.EmailField(max_length=70,blank=False)
+    avatar = models.ImageField(upload_to = 'img/avatars/', default = 'img/avatars/1.jpg')
+    name = models.CharField(max_length=70,blank=True)
+    email = models.EmailField(max_length=70,blank=True)
+    country = models.CharField(max_length=70,blank=False,default='BENIN')
+    promotion = models.CharField(max_length=70,blank=False,default='2023')
+    last_activity = models.DateTimeField(blank=True, null=True)    
+
 
     class Meta:
-        ordering = ('email',)
+        ordering = ('avatar','name', 'email', 'country', 'promotion', 'last_activity')
 
 def __str__(self):
-    return self.email
+    return self.name
 
 class NsLog(models.Model):
     user = models.EmailField(max_length=70,blank=False) #models.ForeignKey(O365User, on_delete=models.CASCADE)
