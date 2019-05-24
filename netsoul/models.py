@@ -17,7 +17,7 @@ class O365User(models.Model):
         ('APE', 'Assitant Pedagogique'),
         ('ADM', 'Administration'),
         ]
-    type = models.CharField(
+    userType = models.CharField(
         max_length=50,
         choices=USER_TYPE,
         default=STUDENT,
@@ -27,12 +27,13 @@ class O365User(models.Model):
     email = models.EmailField(max_length=70,blank=True)
     country = models.CharField(max_length=70,blank=False,default='BENIN')
     promotion = models.CharField(max_length=70,blank=False,default='2023')
+    location = models.CharField(max_length=70,blank=False,default='None')
     active = models.BooleanField(blank=False, null=False,default=False)    
     last_activity = models.DateTimeField(blank=True, null=True)    
 
 
     class Meta:
-        ordering = ('avatar','name', 'email', 'country', 'promotion', 'last_activity')
+        ordering = ('name', 'avatar','email', 'country', 'promotion', 'location','active', 'userType', 'last_activity')
 
 def __str__(self):
     return self.name

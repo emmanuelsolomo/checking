@@ -11,7 +11,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from .models import NsLog, O365User
-from .serializers import NsLogSerializer
+from .serializers import NsLogSerializer, O365UserSerializer
 import datetime
 import pandas as pd
 from datetime import timedelta
@@ -206,3 +206,15 @@ def dashboardlogs(request):
       return JsonResponse(new_logs, safe=False)
 
 
+@csrf_exempt
+def getActivity(request):
+    """
+    Return all nslog for a given user 
+    """
+    if request.method == 'GET':
+      if 'user' not in request.session:
+        sign_out(request)
+        return HttpResponseRedirect(reverse('home'))        
+      activity = O365User.objects.all()
+      serializer = O365UserSerializer(activity, many=True)
+      return JsonResponse(serializer.data, safe=False)

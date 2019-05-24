@@ -138,6 +138,7 @@
                 <th>User</th>
                 <th class="text-center">Country</th>
                 <th>Class</th>
+                <th>Location</th>
                 <th>Activity</th>
               </tr>
             </thead>
@@ -145,7 +146,7 @@
               <tr ng-repeat="user in users">
                 <td class="text-center">
                   <div class="avatar">
-                    <img ng-src="img/avatars/{{ user.avatar }}" class="img-avatar" alt="admin@bootstrapmaster.com">
+                    <img ng-src="{{ user.avatar }}" class="img-avatar" alt="admin@bootstrapmaster.com">
                     <span class="avatar-status" ng-class="{ 'badge-success' : user.status == 'active',
                     'badge-warning' : user.status == 'away',
                     'badge-danger'  : user.status == 'busy',
@@ -155,29 +156,26 @@
                 <td>
                   <div>{{ user.name }}</div>
                   <div class="small text-muted">
-                    <span ng-if="user.new == true">New</span>
-                    <span ng-if="user.new == false">Recurring</span>
-                    | Registered: {{ user.registered }}</div>
+                    <span ng-if="user.active == true">Active</span>
+                    <span ng-if="user.active == false">Offline</span>
+                    | Role: {{ user.userType }}
+                  </div>
                 </td>
                 <td class="text-center">
                   <i class="h4 mb-0 flag-icon flag-icon-{{ user.flag }}" title="{{ user.flag }}" id="{{ user.flag }}"></i>
                 </td>
                 <td>
-                  <div class="clearfix">
-                    <div class="float-left">
-                      <strong>{{ user.usage }}%</strong>
-                    </div>
-                    <div class="float-right">
-                      <small class="text-muted">{{ user.period }}</small>
-                    </div>
-                  </div>
-                  <div class="progress progress-xs">
-                    <div class="progress-bar" ng-class="{ 'bg-info'    : user.usage <= 25,
-                      'bg-success' : user.usage > 25 && user.usage <= 50,
-                      'bg-warning' : user.usage > 50 && user.usage <= 75,
-                      'bg-danger'  : user.usage > 75 && user.usage <= 100 }" value="{{ user.usage }}" role="progressbar" style="width: {{ user.usage }}%" aria-valuenow="{{ user.usage }}" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </td>
+                    <div class="clearfix">
+                      <div class="float-left">
+                        <strong>{{ user.promotion }}</strong>
+                      </div>
+                  </td>
+                  <td>
+                      <div class="clearfix">
+                        <div class="float-left">
+                          <strong>{{ user.location }}</strong>
+                        </div>
+                    </td>
                 <td>
                   <div class="small text-muted">Last login</div>
                   <strong>{{ user.activity }}</strong>

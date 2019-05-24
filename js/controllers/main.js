@@ -241,8 +241,8 @@ function trafficDemoCtrl($scope){
       dataLabels.push(moment(data[i].timestamp).utcOffset('+0100').format('HH:mm'));
       dataValue.push(y);
     }
-    console.log("DataPoints:");
-    console.log(dataPoints);
+    //console.log("DataPoints:");
+    //console.log(dataPoints);
     $scope.dataPoints = dataPoints;
   }
 
@@ -514,6 +514,32 @@ function horizontalBarsType2Ctrl($scope) {
 usersTableCtrl.$inject = ['$scope', '$timeout'];
 function usersTableCtrl($scope, $timeout) {
 
+  $.getJSON("/activity", getActivity);
+  users = []
+  function getActivity(data) {
+    console.log("Acitvity : ");
+    console.log(data)
+
+    for (var i = 0; i < data.length; i++) {
+        if (data[i]['active'] == false){
+          data[i]['status'] = 'offline';
+        }
+        else{
+          data[i]['status'] = 'active';
+        }
+        data[i]['flag'] = 'bj';
+        data[i]['activity'] = '10 sec ago';
+        data[i]['usage'] = '50';
+        data[i]['period'] = 'Jun 11, 2015 - Jul 10, 2015';
+        console.log(data[i]['period'])
+        users.push(data[i]);
+    }
+
+  }
+
+  $scope.users = users;
+  console.log($scope.users )
+/*
   $scope.users = [
     {
       avatar: '1.jpg',
@@ -599,7 +625,7 @@ function usersTableCtrl($scope, $timeout) {
       activity: 'Yesterday',
       satisfaction: '11'
     }
-  ]
+  ]*/
 }
 
 clientsTableCtrl.$inject = ['$scope', '$timeout'];
