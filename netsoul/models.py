@@ -22,7 +22,7 @@ class O365User(models.Model):
         choices=USER_TYPE,
         default=STUDENT,
     )
-    avatar = models.ImageField(upload_to = 'img/avatars/', default = 'img/avatars/1.jpg')
+    avatar = models.ImageField(upload_to = 'img/avatars', default = 'img/avatars/1.jpg')
     name = models.CharField(max_length=70,blank=True)
     email = models.EmailField(max_length=70,blank=True)
     country = models.CharField(max_length=70,blank=False,default='BENIN')
