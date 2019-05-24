@@ -2,16 +2,32 @@ from django.db import models
 from django.utils import timezone
 import datetime
 
+
 # Create your models here.
 
 
+
 class O365User(models.Model):
-    type = models.CharField(max_length=70,blank=False,default='student')
+    STAFF = 'Staff'
+    STUDENT = 'Student'
+    USER_TYPE = [
+        ('STAFF', 'Staff'),
+        ('STUDENT', 'Student'),
+        ('AER', 'Assitant education'),
+        ('APE', 'Assitant Pedagogique'),
+        ('ADM', 'Administration'),
+        ]
+    type = models.CharField(
+        max_length=50,
+        choices=USER_TYPE,
+        default=STUDENT,
+    )
     avatar = models.ImageField(upload_to = 'img/avatars/', default = 'img/avatars/1.jpg')
     name = models.CharField(max_length=70,blank=True)
     email = models.EmailField(max_length=70,blank=True)
     country = models.CharField(max_length=70,blank=False,default='BENIN')
     promotion = models.CharField(max_length=70,blank=False,default='2023')
+    active = models.BooleanField(blank=False, null=False,default=False)    
     last_activity = models.DateTimeField(blank=True, null=True)    
 
 

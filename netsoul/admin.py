@@ -12,8 +12,10 @@ class NsLogForm(forms.ModelForm):
         model = NsLog
 
 class O365UserAdmin(admin.ModelAdmin):
-    list_filter = ('email',)
-    fields = ('email',)
+    fields = ('name','avatar','type','email','country','promotion','active','last_activity')
+    list_filter = ('name','avatar','type','email','country','promotion','active','last_activity')
+    list_display= ('name','avatar','type','email','country','promotion','active','last_activity')
+    
 
 class NsLogAdmin(admin.ModelAdmin):
     fields = ('user', 'date','last_signin',  'timestamp', 'last_logoff', 'ip', 'active')
