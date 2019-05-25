@@ -2,11 +2,12 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 from celery.schedules import crontab
-from netsoul.models import NsLog, O365User
-from netsoul.serializers import NsLogSerializer, O365UserSerializer
 import datetime
 import pandas as pd
 from datetime import timedelta
+#from .load_env import load_env
+
+#load_env()
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'checking.settings')
 
@@ -30,38 +31,16 @@ def setup_periodic_tasks(sender, **kwargs):
     )
 
 
-@app.task(bind=True)
-def debug_task(self):
-    print('Hello World *** Request: {0!r}'.format(self.request))
-
-@app.task(bind=True)
-def update_users_list(self):
-    print('Hello World Add *** Request: {0!r}'.format(self.request))
-
-
-@app.task(bind=True)
-def add(self):
-    print('New Add *** Request: {0!r}'.format(self.request))
-
 app.conf.beat_schedule = {
     'add-every-5-seconds': {
-        'task': 'tasks.add',
-        'schedule': 5.0,
-        'args': (16, 16)
+        'task': 'netsoul.tasks.add',
+        'schedule': 5.0
     },
     'add-every-15-seconds': {
-        'task': 'tasks.update_users_list',
-        'schedule': 15.0,
-        'args': (16, 16)
+        'task': 'netsoul.tasks.update_user_list',
+        'schedule': 60.0
     },
 }
 
 
-@app.task(bind=True)
-def update_user_list(self):
-    nslogs = NsLog.objects.all()
-    serializer = NsLogSerializer(nslogs, many=True)
-    activity = O365User.objects.all()
-    serializer = O365UserSerializer(activity, many=True)
-    print(serializer.data)
 

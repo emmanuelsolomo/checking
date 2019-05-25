@@ -16,6 +16,7 @@ import datetime
 import pandas as pd
 from datetime import timedelta
 from django.utils import timezone
+from checking.celery import app
 
 def check_timedelta(data, time1, time2):
   date_time1_obj = datetime.datetime.strptime(time1, '%Y-%m-%dT%H:%M:%SZ')
@@ -96,13 +97,20 @@ def callback(request):
   store_token(request, token)
   store_user(request, user)
   _auth_completed(request, user)
+  log_time = datetime.datetime.now()
   logtime = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M')
   ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
+  email = user=request.session['user']['email']
   data = dict(user=request.session['user']['email'],timestamp=logtime,last_signin=logtime, ip=ip,active=True)
   serializer = NsLogSerializer(data=data)
   print("Signin In")
   if serializer.is_valid():
     serializer.save()
+    UserActivity = O365User.objects.get(email=email)
+    UserActivity.active = True
+    UserActivity.last_activity = log_time
+    UserActivity.last_seen = "less than a minute ago"
+    UserActivity.save()
   print("Signed In")    
   return HttpResponseRedirect(reverse('dashboard'))
 
@@ -168,10 +176,15 @@ def nslog(request):
           data = dict(user=user,timestamp=logtime,ip=ip,active=True)
           nslogs = NsLog.objects.filter(user=user,date=datetime.date.today())
           log_length = len(nslogs)
+          UserActivity = O365User.objects.get(email=user)
+          UserActivity.active = True
+          UserActivity.last_activity = log_time
           if log_length > 0:
             time_difference = log_time - nslogs[log_length - 1].timestamp
             time_difference_in_minutes = time_difference / timedelta(minutes=1)
-            serializer = NsLogSerializer(data=data)        
+            serializer = NsLogSerializer(data=data)
+            UserActivity.last_seen = str(round(time_difference_in_minutes)) + " minutes ago"
+            UserActivity.save()        
             if serializer.is_valid() and time_difference_in_minutes >= 5:
               serializer.save()
             return JsonResponse(serializer.data, safe=False)
@@ -195,6 +208,11 @@ def dashboardlogs(request):
       if len(nslogs) == 0:
         sign_out(request)
         return HttpResponseRedirect(reverse('home'))
+      UserActivity = O365User.objects.get(email=user)
+      UserActivity.active = True
+      UserActivity.last_activity =  datetime.datetime.now()
+      UserActivity.last_seen = "less than a minute ago"
+      UserActivity.save()
       serializer = NsLogSerializer(nslogs, many=True)
       start=str(date) + ':00Z'
       end=serializer.data[0]['timestamp']
@@ -218,3 +236,4 @@ def getActivity(request):
       activity = O365User.objects.all()
       serializer = O365UserSerializer(activity, many=True)
       return JsonResponse(serializer.data, safe=False)
+

@@ -27,9 +27,11 @@ class O365User(models.Model):
     email = models.EmailField(max_length=70,blank=True)
     country = models.CharField(max_length=70,blank=False,default='BENIN')
     promotion = models.CharField(max_length=70,blank=False,default='2023')
-    location = models.CharField(max_length=70,blank=False,default='None')
+    location = models.CharField(max_length=70,blank=False,default='Seme City')
+    flag = models.CharField(max_length=70,blank=False,default='bj')
     active = models.BooleanField(blank=False, null=False,default=False)    
-    last_activity = models.DateTimeField(blank=True, null=True)    
+    last_activity = models.DateTimeField(blank=True, null=True) 
+    last_seen = models.CharField(max_length=70,blank=True,default="Never been online")    
 
 
     class Meta:

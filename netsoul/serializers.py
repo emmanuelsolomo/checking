@@ -12,12 +12,12 @@ class O365UserSerializer(serializers.Serializer):
     promotion = serializers.CharField(required=True)
     location = serializers.CharField(required=True)
     active = serializers.BooleanField(required=True)   
-    last_activity = serializers.DateTimeField(required=True)   
-
+    last_activity = serializers.DateTimeField(required=False)  
+    last_seen = serializers.DateTimeField(required=False)   
 
     class Meta:
         model = O365User
-        fields = ('name', 'avatar','email', 'country', 'promotion', 'location', 'active', 'userType',  'last_activity')
+        fields = ('name', 'avatar','email', 'country', 'promotion', 'location', 'active', 'userType',  'last_activity', 'last_seen')
 
     def create(self, validated_data):
         """
