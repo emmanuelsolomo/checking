@@ -527,7 +527,6 @@ function usersTableCtrl($scope, $timeout) {
         else{
           data[i]['status'] = 'active';
         }
-        data[i]['flag'] = 'bj';
         data[i]['activity'] = '10 sec ago';
         data[i]['usage'] = '50';
         data[i]['period'] = 'Jun 11, 2015 - Jul 10, 2015';

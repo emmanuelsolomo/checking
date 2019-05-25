@@ -1,5 +1,5 @@
 [Unit]
-Description=Celery Worker
+Description=Celery Beat Schedule
 After=network.target
 StartLimitIntervalSec=0
 
@@ -7,8 +7,9 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-ExecStart=/bin/bash -c 'source /apps/checking/venv/bin/activate && /apps/checking/scripts/celery_worker.sh'
+ExecStart=/bin/bash -c 'source /apps/checking/venv/bin/activate && /apps/checking/scripts/beat_schedule.sh'
 
 [Install]
 WantedBy=multi-user.target
+
 
