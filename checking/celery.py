@@ -2,7 +2,11 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 from celery.schedules import crontab
-
+from netsoul.models import NsLog, O365User
+from netsoul.serializers import NsLogSerializer, O365UserSerializer
+import datetime
+import pandas as pd
+from datetime import timedelta
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'checking.settings')
 
@@ -55,4 +59,9 @@ app.conf.beat_schedule = {
 
 @app.task(bind=True)
 def update_user_list(self):
-    
+    nslogs = NsLog.objects.all()
+    serializer = NsLogSerializer(nslogs, many=True)
+    activity = O365User.objects.all()
+    serializer = O365UserSerializer(activity, many=True)
+    print(serializer.data)
+
