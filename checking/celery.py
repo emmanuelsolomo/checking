@@ -51,3 +51,8 @@ app.conf.beat_schedule = {
         'args': (16, 16)
     },
 }
+
+
+@app.task(bind=True)
+def update_user_list(self):
+    
