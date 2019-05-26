@@ -39,7 +39,8 @@ function cardChartCtrl1($scope, $http) {
     $scope.tek1  = response.data['tek1'];
     console.log("Scope Nb tek 1 = " + tek1  );
   }).catch(function(response) {
-    console.error('Error occurred:', response.status, response.data);
+    console.log("status:" + response.status);
+    console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
      console.log("Task Finished.");
   })
@@ -102,7 +103,7 @@ function cardChartCtrl2($scope, $http) {
     $scope.tek2 = response.data['tek2'];
     console.log("Scope tek2 : " + $scope.tek2)
   }).catch(function(response) {
-    console.error('Error occurred:', response.status, response.data);
+    console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
      console.log("Task Finished.");
   })
@@ -168,7 +169,7 @@ function cardChartCtrl3($scope, $http) {
     $scope.tek3 = response.data['tek3'];
     console.log("Scope tek3 : " + $scope.tek3)
   }).catch(function(response) {
-    console.error('Error occurred:', response.status, response.data);
+    console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
      console.log("Task Finished.");
   })
@@ -236,7 +237,7 @@ function cardChartCtrl4($scope, $http) {
     $scope.staff = response.data['staff'];
     console.log("Scope staff : " + $scope.staff)
   }).catch(function(response) {
-    console.error('Error occurred:', response.status, response.data);
+    console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
      console.log("Task Finished.");
   })
@@ -301,10 +302,12 @@ function trafficDemoCtrl($scope, $http) {
   dataPoints = [];
 
   function setDataPoints() {
-
+  //dataValue = [];
+  $scope.dataValue = []
   $http.get('/dashboardlogs')
   .then(function (response){
     data = response.data;
+    //dataValue = [];
     for (var i = 0; i < data.length; i++) {
       y = 0
       if (data[i].active){
@@ -317,9 +320,11 @@ function trafficDemoCtrl($scope, $http) {
       y: y
       });
       dataLabels.push(moment(data[i].timestamp).utcOffset('+0100').format('HH:mm'));
-      dataValue.push(y);
+      //dataValue.push(y);
+      $scope.dataValue.push(y);
     }
-    $scope.dataPoints = dataPoints;
+    //$scope.dataPoints = dataPoints;
+    console.log("First Call");
   }).catch(function(response) {
     console.error('Error occurred:', response.status, response.data);
   }).finally(function() {
@@ -352,13 +357,7 @@ function setDataPoints(data) {
   }
   */
 
-  function updateDataPoints(data) {
-    dataPoints = [];
-    $.getJSON("/dashboardlogs", setDataPoints);
-    //$scope.dataPoints = dataPoints;
-  }
-
-  setDataPoints()
+  //setDataPoints()
   var interval = setInterval(setDataPoints(), 5000);
 
   for (var i = 0; i <= elements; i++) {
@@ -372,7 +371,7 @@ function setDataPoints(data) {
   $scope.newSeries = ['Log'];
   $scope.data = [ data1, data2, data3];
   $scope.dataLabels = dataLabels;
-  $scope.dataValue = dataValue;
+  //$scope.dataValue = dataValue;
 
   $scope.colors = ['blue'];
   $scope.options = {
