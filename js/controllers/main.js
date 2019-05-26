@@ -25,19 +25,26 @@ function convertHex(hex,opacity){
   return result;
 }
 
-cardChartCtrl1.$inject = ['$scope'];
-function cardChartCtrl1($scope) {
-
-  $.getJSON("/getUserGroups", getUserGroups);
+cardChartCtrl1.$inject = ['$scope', '$http'];
+function cardChartCtrl1($scope, $http) {
 
   data = [];
 
-  function getUserGroups(groups) {
-    //staff = groups['staff'];
-    data = [ groups['tek1'],  groups['tek1'],  groups['tek1'],  groups['tek1'], groups['tek1'], groups['tek1'], groups['tek1']]
-    $scope.tek1 = groups['tek1'];
-  }
+  $http.get('/getUserGroups')
+  .then(function (response){
+    $scope.jsondata = response.data;
+    console.log("status:" + response.status);
+    console.log(response.data);
+    data = [ response.data['tek1'],  response.data['tek1'],  response.data['tek1'],  response.data['tek1'], response.data['tek1'], response.data['tek1'], response.data['tek1']]
+    $scope.tek1  = response.data['tek1'];
+    console.log("Scope Nb tek 1 = " + tek1  );
+  }).catch(function(response) {
+    console.error('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     console.log("Task Finished.");
+  })
 
+  console.log("Nb tek 1 = " + $scope.tek1  );
   $scope.labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
   $scope.data = data;
 
@@ -81,18 +88,25 @@ function cardChartCtrl1($scope) {
   }
 }
 
-cardChartCtrl2.$inject = ['$scope'];
-function cardChartCtrl2($scope) {
-
-  $.getJSON("/getUserGroups", getUserGroups);
+cardChartCtrl2.$inject = ['$scope', '$http'];
+function cardChartCtrl2($scope, $http) {
 
   data = [];
+  //$scope.tek3 = 22;
 
-  function getUserGroups(groups) {
-    //staff = groups['staff'];
-    data = [ groups['tek2'],  groups['tek2'],  groups['tek2'],  groups['tek2'], groups['tek2'], groups['tek2'], groups['tek2']]
-    $scope.tek2 = groups['tek2'];
-  }
+  $http.get('/getUserGroups')
+  .then(function (response){
+    $scope.jsondata = response.data;
+    console.log("status:" + response.status);
+    data = [ response.data['tek2'],  response.data['tek2'],  response.data['tek2'],  response.data['tek2'], response.data['tek2'], response.data['tek2'], response.data['tek2']]
+    $scope.tek2 = response.data['tek2'];
+    console.log("Scope tek2 : " + $scope.tek2)
+  }).catch(function(response) {
+    console.error('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     console.log("Task Finished.");
+  })
+
 
   $scope.labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
   $scope.data = data;
@@ -139,18 +153,37 @@ function cardChartCtrl2($scope) {
   }
 }
 
-cardChartCtrl3.$inject = ['$scope'];
-function cardChartCtrl3($scope) {
+cardChartCtrl3.$inject = ['$scope', '$http'];
+function cardChartCtrl3($scope, $http) {
 
-  $.getJSON("/getUserGroups", getUserGroups);
 
   data = [];
+  //$scope.tek3 = 22;
 
+  $http.get('/getUserGroups')
+  .then(function (response){
+    $scope.jsondata = response.data;
+    console.log("status:" + response.status);
+    data = [ response.data['tek3'],  response.data['tek3'],  response.data['tek3'],  response.data['tek3'], response.data['tek3'], response.data['tek3'], response.data['tek3']]
+    $scope.tek3 = response.data['tek3'];
+    console.log("Scope tek3 : " + $scope.tek3)
+  }).catch(function(response) {
+    console.error('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     console.log("Task Finished.");
+  })
+
+
+  /*
+  
+  $.getJSON("/getUserGroups", getUserGroups);
+  
   function getUserGroups(groups) {
     //staff = groups['staff'];
     data = [ groups['tek3'],  groups['tek3'],  groups['tek3'],  groups['tek3'], groups['tek3'], groups['tek3'], groups['tek3']]
     $scope.tek3 = groups['tek3'];
   }
+  */
 
   $scope.labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
   $scope.data = data;
@@ -189,24 +222,26 @@ function random(min,max) {
   return Math.floor(Math.random()*(max-min+1)+min);
 }
 
-cardChartCtrl4.$inject = ['$scope'];
-function cardChartCtrl4($scope) {
+cardChartCtrl4.$inject = ['$scope', '$http'];
+function cardChartCtrl4($scope, $http) {
 
-  var elements = 16;
-  var labels = [];
-  var data = [];
-  //
-  //for (var i = 2000; i <= 2000 + elements; i++) {
-  //  labels.push(i);
-  //  data.push(random(40,100));
-  //}
-  $.getJSON("/getUserGroups", getUserGroups);
+  data = [];
+  //$scope.tek3 = 22;
 
-  function getUserGroups(groups) {
-    //staff = groups['staff'];
-    data = [ groups['staff'],  groups['staff'],  groups['staff'],  groups['staff'], groups['staff'], groups['staff'], groups['staff']]
-    $scope.staff = groups['staff'];
-  }
+  $http.get('/getUserGroups')
+  .then(function (response){
+    $scope.jsondata = response.data;
+    console.log("status:" + response.status);
+    data = [ response.data['staff'],  response.data['staff'],  response.data['staff'],  response.data['staff'], response.data['staff'], response.data['staff'], response.data['staff']]
+    $scope.staff = response.data['staff'];
+    console.log("Scope staff : " + $scope.staff)
+  }).catch(function(response) {
+    console.error('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     console.log("Task Finished.");
+  })
+
+
 
   $scope.labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
 
@@ -230,8 +265,8 @@ function cardChartCtrl4($scope) {
   }
 }
 
-trafficDemoCtrl.$inject = ['$scope'];
-function trafficDemoCtrl($scope){
+trafficDemoCtrl.$inject = ['$scope', '$http'];
+function trafficDemoCtrl($scope, $http) {
 
   $scope.date = moment().format('MM/DD/YYYY');
 
@@ -254,20 +289,53 @@ function trafficDemoCtrl($scope){
 
 
 
-  $.getJSON("/dashboardlogs", setDataPoints);
+  //$.getJSON("/dashboardlogs", setDataPoints);
 
 
   var dataPoints = [];
   var dataLabels = [];
   var dataValue = [];
-  function setDataPoints(data) {
+
+  data = [];
+  //$scope.tek3 = 22;
+
+  function setDataPoints() {
+
+  $http.get('/dashboardlogs')
+  .then(function (response){
+    data = response.data;
+    for (var i = 0; i < data.length; i++) {
+      y = 0
+      if (data[i].active){
+        y = 1
+      }
+      ///console.log(newDate(data[i].timestamp))
+      dataPoints.push({
+      //x: moment(data[i].timestamp).utcOffset('+0200'),
+      x: data[i].timestamp,
+      y: y
+      });
+      dataLabels.push(moment(data[i].timestamp).utcOffset('+0100').format('HH:mm'));
+      dataValue.push(y);
+    }
+    $scope.dataPoints = dataPoints;
+  }).catch(function(response) {
+    console.error('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     console.log("Task Finished.");
+  })
+}
+
+
+/*  
+function setDataPoints(data) {
 
     for (var i = 0; i < data.length; i++) {
       y = 0
       if (data[i].active){
         y = 1
       }
-      //console.log(newDate(data[i].timestamp))
+      ///console.log(newDate(data[i].timestamp))
       dataPoints.push({
       //x: moment(data[i].timestamp).utcOffset('+0200'),
       x: data[i].timestamp,
@@ -278,13 +346,19 @@ function trafficDemoCtrl($scope){
     }
 
     $scope.dataPoints = dataPoints;
+   //console.log("dataPoints : ");
+    //console.log(dataPoints);
   }
-
+  */
+ 
   function updateDataPoints(data) {
+    dataPoints = [];
     $.getJSON("/dashboardlogs", setDataPoints);
+    //$scope.dataPoints = dataPoints;
   }
 
-  var interval = setInterval(updateDataPoints, 5000);
+  setDataPoints()
+  var interval = setInterval(setDataPoints(), 5000);
 
   for (var i = 0; i <= elements; i++) {
     data1.push(random(150,250));

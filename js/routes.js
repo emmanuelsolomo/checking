@@ -57,12 +57,44 @@ angular
   .state('app.main', {
     url: '/dashboard',
     templateUrl: 'views/main.html',
+    controller: 'trafficDemoCtrl',
     //page title goes here
     ncyBreadcrumb: {
       label: 'Home',
     },
     //page subtitle goes here
-    params: { subtitle: 'Welcome to ROOT powerfull Bootstrap & AngularJS UI Kit' },
+    params: { subtitle: 'Welcome AEIG Epitech Checking App' }
+    /*resolve: {
+      loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+        // you can lazy load files for an existing module
+        return $ocLazyLoad.load([
+          {
+            serie: true,
+            name: 'chart.js',
+            files: [
+              'node_modules/chart.js/dist/Chart.min.js',
+              'node_modules/angular-chart.js/dist/angular-chart.min.js'
+            ]
+          },
+        ]);
+      }],
+      loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad) {
+        // you can lazy load controllers
+        return $ocLazyLoad.load({
+          files: ['js/controllers/main.js']
+        });
+      }]
+    }*/
+  })
+  .state('app.user', {
+    url: '/user',
+    templateUrl: 'views/user.html',
+    //page title goes here
+    ncyBreadcrumb: {
+      label: 'User',
+    },
+    //page subtitle goes here
+    params: { subtitle: 'User Details' }/*,
     resolve: {
       loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
         // you can lazy load files for an existing module
@@ -83,7 +115,7 @@ angular
           files: ['js/controllers/main.js']
         });
       }]
-    }
+    }*/
   })
   .state('appSimple', {
     abstract: true,
@@ -103,7 +135,6 @@ angular
       }],
     }
   })
-
   // Additional Pages
   .state('appSimple.login', {
     url: '/login',

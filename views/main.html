@@ -138,7 +138,9 @@
               <tr ng-repeat="user in users ">
                 <td class="text-center">
                   <div class="avatar">
-                    <img ng-src="{{ user.avatar }}" class="img-avatar" alt="admin@bootstrapmaster.com">
+                    <a class="dropdown-item" href="#!/user">
+                      <img ng-src="{{ user.avatar }}" class="img-avatar" alt="{{ user.email }}">
+                    </a>
                     <span class="avatar-status" ng-class="{ 'badge-success' : user.status == 'active',
                     'badge-warning' : user.status == 'away',
                     'badge-danger'  : user.status == 'busy',
@@ -146,7 +148,9 @@
                   </div>
                 </td>
                 <td>
-                  <div>{{ user.name }}</div>
+                  <div>{{ user.name }}
+
+                  </div>
                   <div class="small text-muted">
                     <span ng-if="user.active == true">Active</span>
                     <span ng-if="user.active == false">Offline</span>
