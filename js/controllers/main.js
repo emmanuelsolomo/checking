@@ -255,6 +255,8 @@ function trafficDemoCtrl($scope){
 
 
   $.getJSON("/dashboardlogs", setDataPoints);
+
+
   var dataPoints = [];
   var dataLabels = [];
   var dataValue = [];
@@ -278,7 +280,11 @@ function trafficDemoCtrl($scope){
     $scope.dataPoints = dataPoints;
   }
 
-
+  function updateDataPoints(data) {
+    $.getJSON("/dashboardlogs", setDataPoints);
+  }
+  
+  var interval = setInterval(updateDataPoints, 5000);
 
   for (var i = 0; i <= elements; i++) {
     data1.push(random(150,250));
