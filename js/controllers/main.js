@@ -298,6 +298,7 @@ function trafficDemoCtrl($scope, $http) {
 
   data = [];
   //$scope.tek3 = 22;
+  dataPoints = [];
 
   function setDataPoints() {
 
@@ -350,7 +351,7 @@ function setDataPoints(data) {
     //console.log(dataPoints);
   }
   */
- 
+
   function updateDataPoints(data) {
     dataPoints = [];
     $.getJSON("/dashboardlogs", setDataPoints);
