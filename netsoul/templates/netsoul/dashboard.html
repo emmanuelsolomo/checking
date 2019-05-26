@@ -64,7 +64,30 @@
 		 document.write("<script async src='/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
  //]]></script>
  
- 
+	{% if user.is_authenticated %}
+	<script>
+
+		function nslog(){
+			const Http = new XMLHttpRequest();
+			const url='/nslog';
+			Http.open("GET", url);
+			Http.send();
+			Http.onreadystatechange=(e)=>{
+					console.log("Information from nslog to be found Here ");
+					// console.log(Http.responseText)
+			}
+		}
+
+		function myFunction() {
+				nslog()
+		}
+
+		myFunction()
+		var interval = setInterval(myFunction, 30000);
+
+	</script>
+	{% endif %}   
+
 	 <!-- User Interface -->
 	 <ui-view class="app"></ui-view>
  
