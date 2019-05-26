@@ -284,7 +284,7 @@ function trafficDemoCtrl($scope){
     $.getJSON("/dashboardlogs", setDataPoints);
   }
 
-  var interval = setInterval(updateDataPoints, 5000);
+  var interval = setInterval(updateDataPoints, 30000);
 
   for (var i = 0; i <= elements; i++) {
     data1.push(random(150,250));
