@@ -1,0 +1,62 @@
+<div class="animated fadeIn">
+
+
+  <!--/.row-->
+
+  <div class="card" ng-controller="trafficDemoCtrl">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-5">
+          <h4 class="card-title mb-0">NetSoul</h4>
+          <div class="small text-muted"> {{ date }} </div>
+        </div>
+        <!--/.col-->
+        <div class="col-sm-7 d-none d-md-block">
+          <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+
+          </div>
+        </div>
+        <!--/.col-->
+      </div>
+      <!--/.row-->
+      <div class="chart-wrapper" style="height:300px;margin-top:40px;">
+        <!--/<canvas class="chart chart-line" chart-data="dataPoints" chart-labels="labelsX" chart-legend="false" chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors" height="300"></canvas>
+        -->
+        <canvas class="chart chart-line" chart-data="dataValue" chart-labels="dataLabels" chart-legend="false" chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors" height="300"></canvas>
+
+      </div>
+    </div>
+    <div class="card-footer">
+
+    </div>
+  </div>
+  <!--/.card-->
+
+  <div class="row" ng-controller="socialBoxCtrl">
+    <div class="col-sm-6 col-lg-3">
+
+      <!--/.social-box-->
+    </div>
+    <!--/.col-->
+
+    <div class="col-sm-6 col-lg-3">
+      <!--/.social-box-->
+    </div>
+    <!--/.col-->
+
+    <div class="col-sm-6 col-lg-3">
+
+      <!--/.social-box-->
+    </div>
+    <!--/.col-->
+
+    <div class="col-sm-6 col-lg-3">
+      <!--/.social-box-->
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+
+  <!--/.row-->
+
+</div>
