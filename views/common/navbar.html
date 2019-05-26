@@ -1,4 +1,4 @@
-<header class="app-header navbar">
+<header class="app-header navbar" ng-controller="userInfoCtrl" >
   <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -15,7 +15,7 @@
 
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-        <img src="img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
+        <img src={{userInfo.avatar}} class="img-avatar" alt="admin@bootstrapmaster.com">
       </a>
       <div class="dropdown-menu dropdown-menu-right">
 

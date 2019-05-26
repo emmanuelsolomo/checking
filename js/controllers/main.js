@@ -11,6 +11,7 @@ angular
 .controller('barChartCtrl', barChartCtrl)
 .controller('horizontalBarsCtrl', horizontalBarsCtrl)
 .controller('horizontalBarsType2Ctrl', horizontalBarsType2Ctrl)
+.controller('userInfoCtrl', userInfoCtrl)
 .controller('usersTableCtrl', usersTableCtrl);
 
 //convert Hex to RGBA
@@ -27,10 +28,19 @@ function convertHex(hex,opacity){
 cardChartCtrl1.$inject = ['$scope'];
 function cardChartCtrl1($scope) {
 
-  $scope.labels = ['January','February','March','April','May','June','July'];
-  $scope.data = [
-    [65, 59, 84, 84, 51, 55, 40]
-  ];
+  $.getJSON("/getUserGroups", getUserGroups);
+
+  data = [];
+
+  function getUserGroups(groups) {
+    //staff = groups['staff'];
+    data = [ groups['tek1'],  groups['tek1'],  groups['tek1'],  groups['tek1'], groups['tek1'], groups['tek1'], groups['tek1']]
+    $scope.tek1 = groups['tek1'];
+  }
+
+  $scope.labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
+  $scope.data = data;
+
   $scope.colors = [{
     backgroundColor: brandPrimary,
     borderColor: 'rgba(255,255,255,.55)',
@@ -74,10 +84,19 @@ function cardChartCtrl1($scope) {
 cardChartCtrl2.$inject = ['$scope'];
 function cardChartCtrl2($scope) {
 
-  $scope.labels = ['January','February','March','April','May','June','July'];
-  $scope.data = [
-    [1, 18, 9, 17, 34, 22, 11]
-  ];
+  $.getJSON("/getUserGroups", getUserGroups);
+
+  data = [];
+
+  function getUserGroups(groups) {
+    //staff = groups['staff'];
+    data = [ groups['tek2'],  groups['tek2'],  groups['tek2'],  groups['tek2'], groups['tek2'], groups['tek2'], groups['tek2']]
+    $scope.tek2 = groups['tek2'];
+  }
+
+  $scope.labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
+  $scope.data = data;
+
   $scope.colors = [{
     backgroundColor: brandInfo,
     borderColor: 'rgba(255,255,255,.55)',
@@ -123,10 +142,19 @@ function cardChartCtrl2($scope) {
 cardChartCtrl3.$inject = ['$scope'];
 function cardChartCtrl3($scope) {
 
-  $scope.labels = ['January','February','March','April','May','June','July'];
-  $scope.data = [
-    [78, 81, 80, 45, 34, 12, 40]
-  ];
+  $.getJSON("/getUserGroups", getUserGroups);
+
+  data = [];
+
+  function getUserGroups(groups) {
+    //staff = groups['staff'];
+    data = [ groups['tek3'],  groups['tek3'],  groups['tek3'],  groups['tek3'], groups['tek3'], groups['tek3'], groups['tek3']]
+    $scope.tek3 = groups['tek3'];
+  }
+
+  $scope.labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
+  $scope.data = data;
+
   $scope.data4 = [
     [35, 23, 56, 22, 97, 23, 64]
   ];
@@ -168,14 +196,21 @@ function cardChartCtrl4($scope) {
   var labels = [];
   var data = [];
   //
-  for (var i = 2000; i <= 2000 + elements; i++) {
-    labels.push(i);
-    data.push(random(40,100));
+  //for (var i = 2000; i <= 2000 + elements; i++) {
+  //  labels.push(i);
+  //  data.push(random(40,100));
+  //}
+  $.getJSON("/getUserGroups", getUserGroups);
+
+  function getUserGroups(groups) {
+    //staff = groups['staff'];
+    data = [ groups['staff'],  groups['staff'],  groups['staff'],  groups['staff'], groups['staff'], groups['staff'], groups['staff']]
+    $scope.staff = groups['staff'];
   }
 
-  $scope.labels = labels;
+  $scope.labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
 
-  $scope.data = [data];
+  $scope.data = data;
 
   $scope.colors = [{
     backgroundColor: 'rgba(255,255,255,.3)',
@@ -224,9 +259,7 @@ function trafficDemoCtrl($scope){
   var dataLabels = [];
   var dataValue = [];
   function setDataPoints(data) {
-    //console.log("Data set point here");
 
-    //console.log(data);
     for (var i = 0; i < data.length; i++) {
       y = 0
       if (data[i].active){
@@ -241,8 +274,7 @@ function trafficDemoCtrl($scope){
       dataLabels.push(moment(data[i].timestamp).utcOffset('+0100').format('HH:mm'));
       dataValue.push(y);
     }
-    //console.log("DataPoints:");
-    //console.log(dataPoints);
+
     $scope.dataPoints = dataPoints;
   }
 
@@ -464,7 +496,7 @@ function horizontalBarsCtrl($scope) {
       day: 'Sunday',    new: 9,  recurring: 69
     }
   ];
-  console.log($scope.data)
+
 }
 
 horizontalBarsType2Ctrl.$inject = ['$scope'];
@@ -516,116 +548,49 @@ function usersTableCtrl($scope, $timeout) {
 
   $.getJSON("/activity", getActivity);
   users = []
-  function getActivity(data) {
-    console.log("Acitvity : ");
-    console.log(data)
+  function getActivity(activity) {
 
-    for (var i = 0; i < data.length; i++) {
-        if (data[i]['active'] == false){
-          data[i]['status'] = 'offline';
+    for (var i = 0; i < activity['data'].length; i++) {
+        if (activity['data'][i]['active'] == false){
+          activity['data'][i]['status'] = 'offline';
         }
         else{
-          data[i]['status'] = 'active';
+          activity['data'][i]['status'] = 'active';
         }
-        data[i]['activity'] = '10 sec ago';
-        data[i]['usage'] = '50';
-        data[i]['period'] = 'Jun 11, 2015 - Jul 10, 2015';
-        console.log(data[i]['period'])
-        users.push(data[i]);
+        activity['data'][i]['activity'] = '10 sec ago';
+        activity['data'][i]['usage'] = '50';
+        activity['data'][i]['period'] = 'Jun 11, 2015 - Jul 10, 2015';
+
+        if (activity['data'][i]['email'] != activity['email']){
+          users.push(activity['data'][i]);
+        }
     }
 
   }
-
   $scope.users = users;
-  console.log($scope.users )
-/*
-  $scope.users = [
-    {
-      avatar: '1.jpg',
-      status: 'active',
-      name: 'Yiorgos Avraamu',
-      new: true,
-      registered: 'Jan 1, 2015',
-      country: 'USA',
-      flag: 'us',
-      usage: '50',
-      period: 'Jun 11, 2015 - Jul 10, 2015',
-      payment: 'mastercard',
-      activity: '10 sec ago',
-      satisfaction: '48'
-    },
-    {
-      avatar: '2.jpg',
-      status: 'busy',
-      name: 'Avram Tarasios',
-      new: false,
-      registered: 'Jan 1, 2015',
-      country: 'Brazil',
-      flag: 'br',
-      usage: '10',
-      period: 'Jun 11, 2015 - Jul 10, 2015',
-      payment: 'visa',
-      activity: '5 minutes ago',
-      satisfaction: '61'
-    },
-    {
-      avatar: '3.jpg',
-      status: 'away',
-      name: 'Quintin Ed',
-      new: true,
-      registered: 'Jan 1, 2015',
-      country: 'India',
-      flag: 'in',
-      usage: '74',
-      period: 'Jun 11, 2015 - Jul 10, 2015',
-      payment: 'stripe',
-      activity: '1 hour ago',
-      satisfaction: '33'
-    },
-    {
-      avatar: '4.jpg',
-      status: 'offline',
-      name: 'Enéas Kwadwo',
-      new: true,
-      registered: 'Jan 1, 2015',
-      country: 'France',
-      flag: 'fr',
-      usage: '98',
-      period: 'Jun 11, 2015 - Jul 10, 2015',
-      payment: 'paypal',
-      activity: 'Last month',
-      satisfaction: '23'
-    },
-    {
-      avatar: '5.jpg',
-      status: 'active',
-      name: 'Agapetus Tadeáš',
-      new: true,
-      registered: 'Jan 1, 2015',
-      country: 'Spain',
-      flag: 'es',
-      usage: '22',
-      period: 'Jun 11, 2015 - Jul 10, 2015',
-      payment: 'google',
-      activity: 'Last week',
-      satisfaction: '78'
-    },
-    {
-      avatar: '6.jpg',
-      status: 'busy',
-      name: 'Friderik Dávid',
-      new: true,
-      registered: 'Jan 1, 2015',
-      country: 'Poland',
-      flag: 'pl',
-      usage: '43',
-      period: 'Jun 11, 2015 - Jul 10, 2015',
-      payment: 'amex',
-      activity: 'Yesterday',
-      satisfaction: '11'
-    }
-  ]*/
 }
+
+userInfoCtrl.$inject = ['$scope', '$timeout'];
+function userInfoCtrl($scope, $timeout) {
+
+  $.getJSON("/userInfo", getuserInfo);
+
+  userInfo = []
+
+  function getuserInfo(data) {
+    //console.log("Inside User Info : ");
+    $scope.userInfo = data[0];
+    //console.log(data[0]);
+  }
+
+  //$scope.userInfo = userInfo;
+  //console.log("User Info : ");
+  //console.log($scope.userInfo)
+
+}
+
+
+
 
 clientsTableCtrl.$inject = ['$scope', '$timeout'];
 function clientsTableCtrl($scope, $timeout) {

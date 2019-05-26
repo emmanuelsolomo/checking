@@ -17,10 +17,23 @@ class O365User(models.Model):
         ('APE', 'Assitant Pedagogique'),
         ('ADM', 'Administration'),
         ]
+    STAFF_GROUP = 'STAFF'
+    STUDENT_GROUP = 'Tek1'
+    GROUP = [
+        ('STAFF', 'STAFF'),
+        ('TEK1', 'Tek1'),
+        ('TEK2', 'Tek2'),
+        ('TEK3', 'Tek3'),
+        ]
     userType = models.CharField(
         max_length=50,
         choices=USER_TYPE,
         default=STUDENT,
+    )
+    group = models.CharField(
+        max_length=20,
+        choices=GROUP,
+        default=STUDENT_GROUP,
     )
     avatar = models.ImageField(upload_to = 'img/avatars', default = 'img/avatars/1.jpg')
     name = models.CharField(max_length=70,blank=True)

@@ -235,5 +235,49 @@ def getActivity(request):
         return HttpResponseRedirect(reverse('home'))        
       activity = O365User.objects.all()
       serializer = O365UserSerializer(activity, many=True)
-      return JsonResponse(serializer.data, safe=False)
+      activityData = dict(data=serializer.data,email=request.session['user']['email'])
+      return JsonResponse(activityData, safe=False)
+
+@csrf_exempt
+def getUserGroups(request):
+    """
+    Return all nslog for a given user 
+    """
+    if request.method == 'GET':
+      if 'user' not in request.session:
+        sign_out(request)
+        return HttpResponseRedirect(reverse('home'))        
+      groups = O365User.objects.all()
+      serializer = O365UserSerializer(groups, many=True)
+      tek1 = 0
+      tek2 = 0
+      tek3 = 0
+      staff = 0
+      for user in serializer.data:
+        #print(user)
+        if (user['group'] == 'STAFF' and user['active'] == True):
+          print("Found user in staff")
+          staff = staff + 1
+          print("nb staff : " + str(staff))
+        if (user['group'] == 'Tek1' and user['active'] == True):
+          tek1 = tek1 + 1
+        if (user['group'] == 'Tek2' and user['active'] == True):
+          tek2 = tek2 + 1
+        if (user['group'] == 'Tek3' and user['active'] == True):
+          tek3 = tek3
+      return JsonResponse(dict(staff=staff,tek1=tek1,tek2=tek2,tek3=tek3), safe=False)
+
+
+@csrf_exempt
+def getUserInfo(request):
+    """
+    Return all nslog for a given user 
+    """
+    if request.method == 'GET':
+      if 'user' not in request.session:
+        sign_out(request)
+        return HttpResponseRedirect(reverse('home'))        
+      user = O365User.objects.filter(email=request.session['user']['email'])
+      UserSerializer = O365UserSerializer(user, many=True)
+      return JsonResponse(UserSerializer.data, safe=False)
 

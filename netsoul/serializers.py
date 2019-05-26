@@ -7,8 +7,10 @@ class O365UserSerializer(serializers.Serializer):
     userType = serializers.CharField(required=True)
     avatar = serializers.ImageField(required=True)
     name = serializers.CharField(required=True)
+    group = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
     country = serializers.CharField(required=True)
+    flag = serializers.CharField(required=True)
     promotion = serializers.CharField(required=True)
     location = serializers.CharField(required=True)
     active = serializers.BooleanField(required=True)   
@@ -17,7 +19,7 @@ class O365UserSerializer(serializers.Serializer):
 
     class Meta:
         model = O365User
-        fields = ('name', 'avatar','email', 'country', 'promotion', 'location', 'active', 'userType',  'last_activity', 'last_seen')
+        fields = ('name', 'group', 'avatar','email', 'country', 'flag', 'promotion', 'location', 'active', 'userType',  'last_activity', 'last_seen')
 
     def create(self, validated_data):
         """
