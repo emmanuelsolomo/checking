@@ -86,6 +86,10 @@
 		var interval = setInterval(myFunction, 30000);
 
 	</script>
+	{% else %}
+	<script>
+		window.location.replace("/signout");
+	</script>	
 	{% endif %}   
 
 	 <!-- User Interface -->
