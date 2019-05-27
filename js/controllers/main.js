@@ -298,6 +298,7 @@ function UserTrafficDemoCtrl($scope, $http, $stateParams) {
   function setDataPoints() {
   //dataValue = [];
   $scope.dataValue = []
+  $scope.grahOwner = $stateParams['email']
   $http.get('/userdashboardlogs/' + $stateParams['email'])
   .then(function (response){
     data = response.data;
