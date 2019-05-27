@@ -58,5 +58,70 @@
   <!--/.row-->
 
   <!--/.row-->
-
+  <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+  
+            <table class="table table-hover table-outline mb-0 hidden-sm-down">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-center"><i class="icon-people"></i></th>
+                  <th>User</th>
+                  <th class="text-center">Country</th>
+                  <th>Class</th>
+                  <th>Location</th>
+                  <th>Activity</th>
+                </tr>
+              </thead>
+              <tbody ng-controller="usersTableCtrl">
+                <tr ng-repeat="user in users ">
+                  <td class="text-center">
+                    <div class="avatar">
+                      <a href="#!/user/{{ user.email }}">
+                        <img ng-src="{{ user.avatar }}" class="img-avatar" alt="{{ user.email }}">
+                      </a>
+                      <span class="avatar-status" ng-class="{ 'badge-success' : user.status == 'active',
+                      'badge-warning' : user.status == 'away',
+                      'badge-danger'  : user.status == 'busy',
+                      'badge-secondary' : user.status == 'offline' }"></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div>{{ user.name }}
+  
+                    </div>
+                    <div class="small text-muted">
+                      <span ng-if="user.active == true">Active</span>
+                      <span ng-if="user.active == false">Offline</span>
+                      | Role: {{ user.userType }}
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <i class="h4 mb-0 flag-icon flag-icon-{{ user.flag }}" title="{{ user.flag }}" id="{{ user.flag }}"></i>
+                  </td>
+                  <td>
+                      <div class="clearfix">
+                        <div class="float-left">
+                          <strong>{{ user.promotion }}</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="clearfix">
+                          <div class="float-left">
+                            <strong>{{ user.location }}</strong>
+                          </div>
+                      </td>
+                  <td>
+                    <div class="small text-muted">Last seen</div>
+                    <strong>{{ user.last_seen }}</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!--/.col-->
+    </div>
 </div>
