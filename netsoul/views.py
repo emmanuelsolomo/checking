@@ -238,6 +238,34 @@ def dashboardlogs(request):
 
 
 @csrf_exempt
+def userdashboardlogs(request,email):
+    """
+    Return all nslog for a given user 
+    """
+    if request.method == 'GET':
+      if 'user' not in request.session:
+        sign_out(request)
+        return HttpResponseRedirect(reverse('home'))
+      print("Request params : Email : " + email)
+
+      date = datetime.date.today().strftime('%Y-%m-%dT%H:%M')
+      simple_date=datetime.date.today().strftime('%Y-%m-%d')    
+      nslogs = NsLog.objects.filter(user=email,date=datetime.date.today())
+      ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
+      serializer = NsLogSerializer(nslogs, many=True)
+      start=str(date) + ':00Z'
+      if len(serializer.data) > 0:
+        end=serializer.data[0]['timestamp']
+      else:
+        end=datetime.datetime.now(timezone.utc)
+      stamps = pd.date_range(start=start, end=end,freq='0H10T')
+      s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%SZ'))
+      data = dict(zip(s.index.format(), s))
+      noactivity_logs = [ dict(user=email,date=simple_date,timestamp=date,last_signin='None',ip='None',active=False)  for  date, key in  data.items()]
+      new_logs = noactivity_logs+find_inactivy(serializer.data)
+      return JsonResponse(new_logs, safe=False)
+
+@csrf_exempt
 def getActivity(request):
     """
     Return all nslog for a given user 

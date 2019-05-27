@@ -87,14 +87,14 @@ angular
     }*/
   })
   .state('app.user', {
-    url: '/user',
+    url: '/user/:email',
     templateUrl: 'views/user.html',
     //page title goes here
     ncyBreadcrumb: {
       label: 'User',
     },
     //page subtitle goes here
-    params: { subtitle: 'User Details' }/*,
+    params: { email: 'User Email' }/*,
     resolve: {
       loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
         // you can lazy load files for an existing module

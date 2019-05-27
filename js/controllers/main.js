@@ -6,6 +6,7 @@ angular
 .controller('cardChartCtrl3', cardChartCtrl3)
 .controller('cardChartCtrl4', cardChartCtrl4)
 .controller('trafficDemoCtrl', trafficDemoCtrl)
+.controller('UserTrafficDemoCtrl', UserTrafficDemoCtrl)
 .controller('socialBoxCtrl', socialBoxCtrl)
 .controller('sparklineChartCtrl', sparklineChartCtrl)
 .controller('barChartCtrl', barChartCtrl)
@@ -256,8 +257,8 @@ function cardChartCtrl4($scope, $http) {
   }
 }
 
-trafficDemoCtrl.$inject = ['$scope', '$http'];
-function trafficDemoCtrl($scope, $http) {
+UserTrafficDemoCtrl.$inject = ['$scope', '$http', '$stateParams'];
+function UserTrafficDemoCtrl($scope, $http, $stateParams) {
 
   $scope.date = moment().format('MM/DD/YYYY');
 
@@ -279,6 +280,140 @@ function trafficDemoCtrl($scope, $http) {
   var data3 = [];
 
 
+  console.log("Params :")
+  console.log($stateParams)
+  
+
+  //$.getJSON("/dashboardlogs", setDataPoints);
+
+
+  var dataPoints = [];
+  var dataLabels = [];
+  var dataValue = [];
+
+  data = [];
+  //$scope.tek3 = 22;
+  dataPoints = [];
+
+  function setDataPoints() {
+  //dataValue = [];
+  $scope.dataValue = []
+  $http.get('/userdashboardlogs/' + $stateParams['email'])
+  .then(function (response){
+    data = response.data;
+    //dataValue = [];
+    for (var i = 0; i < data.length; i++) {
+      y = 0
+      if (data[i].active){
+        y = 1
+      }
+      ///console.log(newDate(data[i].timestamp))
+      dataPoints.push({
+      //x: moment(data[i].timestamp).utcOffset('+0200'),
+      x: data[i].timestamp,
+      y: y
+      });
+      dataLabels.push(moment(data[i].timestamp).utcOffset('+0100').format('HH:mm'));
+      $scope.dataValue.push(y);
+    }
+  }).catch(function(response) {
+    console.error('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     //console.log("Task Finished.");
+  })
+}
+
+
+  var interval = setInterval(setDataPoints(), 5000);
+
+  for (var i = 0; i <= elements; i++) {
+    data1.push(random(150,250));
+    data2.push(random(65,75));
+    data3.push(65);
+  }
+
+  $scope.labelsX = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Thursday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  $scope.series = ['Current', 'Previous', 'BEP'];
+  $scope.newSeries = ['Log'];
+  $scope.data = [ data1, data2, data3];
+  $scope.dataLabels = dataLabels;
+  //$scope.dataValue = dataValue;
+
+  $scope.colors = ['blue'];
+  $scope.options = {
+    responsive: true,
+    title: {
+      display: true,
+      text: 'Activity Log'
+    },
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          callback: function(value) {
+            return value;
+          }
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          major: {
+            fontStyle: 'bold',
+            fontColor: '#20a8d8'
+          },
+          callback:  function(value, index, values) {
+                  if (value == 0){
+                   return 'Inactive';
+                  }
+                 if (value == 1){
+                    return 'Active';
+                  }
+          }				                      
+        }
+      }]
+    },
+    elements: {
+      point: {
+        radius: 0,
+        hitRadius: 10,
+        hoverRadius: 4,
+        hoverBorderWidth: 3,
+      }
+    },
+  }
+}
+
+
+
+trafficDemoCtrl.$inject = ['$scope', '$http', '$stateParams'];
+function trafficDemoCtrl($scope, $http, $stateParams) {
+
+  $scope.date = moment().format('MM/DD/YYYY');
+
+  function newDate(days) {
+    return moment().add(days, 'd').toDate();
+  }
+
+  function newDateString(days) {
+    return moment().add(days, 'd').format();
+  }
+
+  function random(min,max) {
+    return Math.floor(Math.random()*(max-min+1)+min);
+  }
+
+  var elements = 27;
+  var data1 = [];
+  var data2 = [];
+  var data3 = [];
+
+
+  //console.log("Params :")
+  //console.log($stateParams)
+  
 
   //$.getJSON("/dashboardlogs", setDataPoints);
 
@@ -315,36 +450,11 @@ function trafficDemoCtrl($scope, $http) {
   }).catch(function(response) {
     console.error('Error occurred:', response.status, response.data);
   }).finally(function() {
-     console.log("Task Finished.");
+     //console.log("Task Finished.");
   })
 }
 
 
-/*  
-function setDataPoints(data) {
-
-    for (var i = 0; i < data.length; i++) {
-      y = 0
-      if (data[i].active){
-        y = 1
-      }
-      ///console.log(newDate(data[i].timestamp))
-      dataPoints.push({
-      //x: moment(data[i].timestamp).utcOffset('+0200'),
-      x: data[i].timestamp,
-      y: y
-      });
-      dataLabels.push(moment(data[i].timestamp).utcOffset('+0100').format('HH:mm'));
-      dataValue.push(y);
-    }
-
-    $scope.dataPoints = dataPoints;
-   //console.log("dataPoints : ");
-    //console.log(dataPoints);
-  }
-  */
-
-  //setDataPoints()
   var interval = setInterval(setDataPoints(), 5000);
 
   for (var i = 0; i <= elements; i++) {
@@ -617,6 +727,7 @@ function usersTableCtrl($scope, $timeout, $http) {
  // $.getJSON("/activity", getActivity);
   users = []
 
+
   $scope.users = []
   $http.get('/activity')
     .then(function (response){
@@ -668,8 +779,8 @@ function usersTableCtrl($scope, $timeout, $http) {
   */
 }
 
-userInfoCtrl.$inject = ['$scope', '$timeout', '$http'];
-function userInfoCtrl($scope, $timeout, $http) {
+userInfoCtrl.$inject = ['$scope',  '$http', '$stateParams'];
+function userInfoCtrl($scope,  $http, $stateParams) {
 
   /*$.getJSON("/userInfo", getuserInfo);
 
@@ -684,15 +795,15 @@ function userInfoCtrl($scope, $timeout, $http) {
   $scope.dataValue = []
   $http.get('/userInfo')
   .then(function (response){
-    console.log(response.data);
+    //console.log(response.data);
     $scope.userInfo  = response.data[0];
     //dataValue = [];
     //$scope.dataPoints = dataPoints;
-    console.log("First Call");
+    //console.log("First Call");
   }).catch(function(response) {
     console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
-     console.log("Task Finished.");
+     //console.log("Task Finished.");
   })
 
   //$scope.userInfo = userInfo;

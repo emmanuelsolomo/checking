@@ -17,6 +17,7 @@ urlpatterns = [
   path('dashboard', views.dashboard,  name='dashboard'),
   path('nslog', views.nslog,  name='nslog'),
   path('dashboardlogs', views.dashboardlogs,  name='dashboardlogs'),
+  path('userdashboardlogs/<email>', views.userdashboardlogs,  name='userdashboardlogs'),
   path('activity', views.getActivity,  name='activity'),
   path('getUserGroups', views.getUserGroups,  name='getUserGroups'),
   path('userInfo', views.getUserInfo,  name='userInfo'),
