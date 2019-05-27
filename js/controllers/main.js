@@ -623,13 +623,44 @@ function horizontalBarsType2Ctrl($scope) {
   ];
 }
 
-usersTableCtrl.$inject = ['$scope', '$timeout'];
-function usersTableCtrl($scope, $timeout) {
 
-  $.getJSON("/activity", getActivity);
+usersTableCtrl.$inject = ['$scope', '$timeout', '$http'];
+function usersTableCtrl($scope, $timeout, $http) {
+
+ // $.getJSON("/activity", getActivity);
   users = []
-  function getActivity(activity) {
 
+  $scope.users = []
+  $http.get('/activity')
+    .then(function (response){
+    $scope.users = []
+    activity = response.data;
+    //dataValue = [];
+    for (var i = 0; i < activity['data'].length; i++) {
+          if (activity['data'][i]['active'] == false){
+            activity['data'][i]['status'] = 'offline';
+          }
+          else{
+            activity['data'][i]['status'] = 'active';
+          }
+          activity['data'][i]['activity'] = '10 sec ago';
+          activity['data'][i]['usage'] = '50';
+          activity['data'][i]['period'] = 'Jun 11, 2015 - Jul 10, 2015';
+
+          if (activity['data'][i]['email'] != activity['email']){
+            $scope.users.push(activity['data'][i]);
+          }
+      }
+    //$scope.dataPoints = dataPoints;
+    console.log("First Call");
+  }).catch(function(response) {
+    console.error('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     console.log("Task Finished.");
+  })
+
+/*
+  function getActivity(activity) {
     for (var i = 0; i < activity['data'].length; i++) {
         if (activity['data'][i]['active'] == false){
           activity['data'][i]['status'] = 'offline';
@@ -648,12 +679,13 @@ function usersTableCtrl($scope, $timeout) {
 
   }
   $scope.users = users;
+  */
 }
 
 userInfoCtrl.$inject = ['$scope', '$timeout'];
 function userInfoCtrl($scope, $timeout) {
 
-  $.getJSON("/userInfo", getuserInfo);
+  /*$.getJSON("/userInfo", getuserInfo);
 
   userInfo = []
 
@@ -661,7 +693,35 @@ function userInfoCtrl($scope, $timeout) {
     //console.log("Inside User Info : ");
     $scope.userInfo = data[0];
     //console.log(data[0]);
-  }
+  }*/
+
+  $scope.dataValue = []
+  $http.get('/userInfo')
+  .then(function (response){
+    $scope.userInfo  = response.data[0];
+    //dataValue = [];
+    for (var i = 0; i < data.length; i++) {
+      y = 0
+      if (data[i].active){
+        y = 1
+      }
+      ///console.log(newDate(data[i].timestamp))
+      dataPoints.push({
+      //x: moment(data[i].timestamp).utcOffset('+0200'),
+      x: data[i].timestamp,
+      y: y
+      });
+      dataLabels.push(moment(data[i].timestamp).utcOffset('+0100').format('HH:mm'));
+      //dataValue.push(y);
+      $scope.dataValue.push(y);
+    }
+    //$scope.dataPoints = dataPoints;
+    console.log("First Call");
+  }).catch(function(response) {
+    console.log('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     console.log("Task Finished.");
+  })
 
   //$scope.userInfo = userInfo;
   //console.log("User Info : ");
