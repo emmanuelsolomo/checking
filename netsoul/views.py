@@ -17,6 +17,7 @@ import pandas as pd
 from datetime import timedelta
 from django.utils import timezone
 from checking.celery import app
+import pytz
 
 def check_timedelta(data, time1, time2):
   date_time1_obj = datetime.datetime.strptime(time1, '%Y-%m-%dT%H:%M:%SZ')
@@ -257,12 +258,25 @@ def userdashboardlogs(request,email):
       if len(serializer.data) > 0:
         end=serializer.data[0]['timestamp']
       else:
-        end=datetime.datetime.now(timezone.utc)
+        end=datetime.datetime.now((timezone.utc))
       stamps = pd.date_range(start=start, end=end,freq='0H10T')
       s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%SZ'))
       data = dict(zip(s.index.format(), s))
       noactivity_logs = [ dict(user=email,date=simple_date,timestamp=date,last_signin='None',ip='None',active=False)  for  date, key in  data.items()]
       new_logs = noactivity_logs+find_inactivy(serializer.data)
+      nb_logs = len(new_logs)
+      endDiff_obj = datetime.datetime.strptime(datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ'), '%Y-%m-%dT%H:%M:%SZ')
+      last_log_obj = datetime.datetime.strptime(new_logs[nb_logs - 1]['timestamp'], '%Y-%m-%dT%H:%M:%SZ')
+      time_difference =  endDiff_obj - last_log_obj
+      time_difference_in_minutes = time_difference / timedelta(minutes=1)
+      if time_difference_in_minutes > 10:
+        start=new_logs[nb_logs - 1]['timestamp']
+        end=datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        stamps = pd.date_range(start=start, end=end,freq='0H10T')
+        s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%SZ'))
+        data = dict(zip(s.index.format(), s))
+        logout_inactivity_logs = [ dict(user=email,date=simple_date,timestamp=date,last_signin='None',ip='None',active=False)  for  date, key in  data.items()]
+        new_logs = new_logs + logout_inactivity_logs
       return JsonResponse(new_logs, safe=False)
 
 @csrf_exempt
