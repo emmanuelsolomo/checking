@@ -185,11 +185,11 @@ def nslog(request):
             serializer = NsLogSerializer(data=data)
             UserActivity.last_seen = str(round(time_difference_in_minutes)) + " minutes ago"
             if ip == "137.255.10.29" or ip == "41.85.161.132":
-              UserActivity.location = "[SemeCity][2nd Floor] Heap"
+              UserActivity.location = "[EpitechxSemeCity][2nd Floor] HEAP"
             elif ip == "137.255.8.213":
-              UserActivity.location = "[SemeCity][Ground Floor] ADM"
+              UserActivity.location = "[EpitechxSemeCity][Ground Floor] ADM"
             else:
-              UserActivity.location = "Somewhere in the world"
+              UserActivity.location = "[SomewherexWorld]"
             UserActivity.save()        
             if serializer.is_valid() and time_difference_in_minutes >= 5:
               serializer.save()
@@ -220,11 +220,11 @@ def dashboardlogs(request):
       UserActivity.last_activity =  datetime.datetime.now()
       UserActivity.last_seen = "less than a minute ago"
       if ip == "137.255.10.29" or ip == "41.85.161.132":
-        UserActivity.location = "[SemeCity][2nd Floor] Heap"
+        UserActivity.location = "[EpitechxSemeCity][Ground Floor] ADM"
       elif ip == "137.255.8.213":
-        UserActivity.location = "[SemeCity][Ground Floor] ADM"
+        UserActivity.location = "[EpitechxSemeCity][Ground Floor] ADM"
       else:
-        UserActivity.location = "Somewhere in the world"
+        UserActivity.location =  "[SomewherexWorld]"
       UserActivity.save()
       serializer = NsLogSerializer(nslogs, many=True)
       start=str(date) + ':00Z'
