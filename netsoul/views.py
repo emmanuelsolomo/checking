@@ -205,6 +205,7 @@ def dashboardlogs(request):
       date = datetime.date.today().strftime('%Y-%m-%dT%H:%M')
       simple_date=datetime.date.today().strftime('%Y-%m-%d')    
       nslogs = NsLog.objects.filter(user=user,date=datetime.date.today())
+      ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
       if len(nslogs) == 0:
         sign_out(request)
         return HttpResponseRedirect(reverse('home'))
@@ -212,6 +213,12 @@ def dashboardlogs(request):
       UserActivity.active = True
       UserActivity.last_activity =  datetime.datetime.now()
       UserActivity.last_seen = "less than a minute ago"
+      if ip == "137.255.10.29" or ip == "41.85.161.132":
+        UserActivity.last_seen = "[SemeCity][2nd Floor] Heap"
+      elif ip == "137.255.8.213":
+        UserActivity.last_seen = "[SemeCity][Ground Floor] ADM"
+      else:
+        UserActivity.last_seen = "Somewhere in the world"
       UserActivity.save()
       serializer = NsLogSerializer(nslogs, many=True)
       start=str(date) + ':00Z'
