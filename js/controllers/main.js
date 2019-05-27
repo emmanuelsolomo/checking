@@ -33,13 +33,9 @@ function cardChartCtrl1($scope, $http) {
   $http.get('/getUserGroups')
   .then(function (response){
     $scope.jsondata = response.data;
-    console.log("status:" + response.status);
-    console.log(response.data);
     data = [ response.data['tek1'],  response.data['tek1'],  response.data['tek1'],  response.data['tek1'], response.data['tek1'], response.data['tek1'], response.data['tek1']]
     $scope.tek1  = response.data['tek1'];
-    console.log("Scope Nb tek 1 = " + tek1  );
   }).catch(function(response) {
-    console.log("status:" + response.status);
     console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
      console.log("Task Finished.");
@@ -98,10 +94,8 @@ function cardChartCtrl2($scope, $http) {
   $http.get('/getUserGroups')
   .then(function (response){
     $scope.jsondata = response.data;
-    console.log("status:" + response.status);
     data = [ response.data['tek2'],  response.data['tek2'],  response.data['tek2'],  response.data['tek2'], response.data['tek2'], response.data['tek2'], response.data['tek2']]
     $scope.tek2 = response.data['tek2'];
-    console.log("Scope tek2 : " + $scope.tek2)
   }).catch(function(response) {
     console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
@@ -164,10 +158,8 @@ function cardChartCtrl3($scope, $http) {
   $http.get('/getUserGroups')
   .then(function (response){
     $scope.jsondata = response.data;
-    console.log("status:" + response.status);
     data = [ response.data['tek3'],  response.data['tek3'],  response.data['tek3'],  response.data['tek3'], response.data['tek3'], response.data['tek3'], response.data['tek3']]
     $scope.tek3 = response.data['tek3'];
-    console.log("Scope tek3 : " + $scope.tek3)
   }).catch(function(response) {
     console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
@@ -232,10 +224,8 @@ function cardChartCtrl4($scope, $http) {
   $http.get('/getUserGroups')
   .then(function (response){
     $scope.jsondata = response.data;
-    console.log("status:" + response.status);
     data = [ response.data['staff'],  response.data['staff'],  response.data['staff'],  response.data['staff'], response.data['staff'], response.data['staff'], response.data['staff']]
     $scope.staff = response.data['staff'];
-    console.log("Scope staff : " + $scope.staff)
   }).catch(function(response) {
     console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
@@ -320,11 +310,8 @@ function trafficDemoCtrl($scope, $http) {
       y: y
       });
       dataLabels.push(moment(data[i].timestamp).utcOffset('+0100').format('HH:mm'));
-      //dataValue.push(y);
       $scope.dataValue.push(y);
     }
-    //$scope.dataPoints = dataPoints;
-    console.log("First Call");
   }).catch(function(response) {
     console.error('Error occurred:', response.status, response.data);
   }).finally(function() {
@@ -652,11 +639,10 @@ function usersTableCtrl($scope, $timeout, $http) {
           }
       }
     //$scope.dataPoints = dataPoints;
-    console.log("First Call");
   }).catch(function(response) {
     console.error('Error occurred:', response.status, response.data);
   }).finally(function() {
-     console.log("Task Finished.");
+     console.log("usersTableCtrl Task Finished.");
   })
 
 /*
@@ -682,8 +668,8 @@ function usersTableCtrl($scope, $timeout, $http) {
   */
 }
 
-userInfoCtrl.$inject = ['$scope', '$timeout'];
-function userInfoCtrl($scope, $timeout) {
+userInfoCtrl.$inject = ['$scope', '$timeout', '$http'];
+function userInfoCtrl($scope, $timeout, $http) {
 
   /*$.getJSON("/userInfo", getuserInfo);
 
@@ -698,23 +684,9 @@ function userInfoCtrl($scope, $timeout) {
   $scope.dataValue = []
   $http.get('/userInfo')
   .then(function (response){
+    console.log(response.data);
     $scope.userInfo  = response.data[0];
     //dataValue = [];
-    for (var i = 0; i < data.length; i++) {
-      y = 0
-      if (data[i].active){
-        y = 1
-      }
-      ///console.log(newDate(data[i].timestamp))
-      dataPoints.push({
-      //x: moment(data[i].timestamp).utcOffset('+0200'),
-      x: data[i].timestamp,
-      y: y
-      });
-      dataLabels.push(moment(data[i].timestamp).utcOffset('+0100').format('HH:mm'));
-      //dataValue.push(y);
-      $scope.dataValue.push(y);
-    }
     //$scope.dataPoints = dataPoints;
     console.log("First Call");
   }).catch(function(response) {
