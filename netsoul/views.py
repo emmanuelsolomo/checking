@@ -15,13 +15,13 @@ from .serializers import NsLogSerializer, O365UserSerializer
 import datetime
 import pandas as pd
 from datetime import timedelta
-from django.utils import timezone
+#from django.utils import timezone
 from checking.celery import app
 import pytz
 
 def check_timedelta(data, time1, time2):
-  date_time1_obj = datetime.datetime.strptime(time1, '%Y-%m-%dT%H:%M:%SZ')
-  date_time2_obj = datetime.datetime.strptime(time2, '%Y-%m-%dT%H:%M:%SZ')
+  date_time1_obj = datetime.datetime.strptime(time1, '%Y-%m-%dT%H:%M:%S%z')
+  date_time2_obj = datetime.datetime.strptime(time2, '%Y-%m-%dT%H:%M:%S%z')
   time_difference =  date_time1_obj - date_time2_obj
 
   time_difference_in_minutes = time_difference / timedelta(minutes=1)
@@ -166,7 +166,10 @@ def nslog(request):
         print(request.user_agent.os.family)
         print(request.user_agent.os.version)
         ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
-        log_time = datetime.datetime.now(timezone.utc)
+        #log_time = datetime.datetime.now(timezone.utc)
+
+        timezone = pytz.timezone("Africa/Porto-Novo")
+        log_time = timezone.localize(datetime.datetime.now())
         logtime = log_time.strftime('%Y-%m-%dT%H:%M')
         if not 'user' in request.session:
           remove_user_and_token(request)
@@ -180,7 +183,7 @@ def nslog(request):
           UserActivity = O365User.objects.get(email=user)
           UserActivity.active = True
           UserActivity.last_activity = log_time
-          if log_length > 0:
+          if log_length > 0: 
             time_difference = log_time - nslogs[log_length - 1].timestamp
             time_difference_in_minutes = time_difference / timedelta(minutes=1)
             serializer = NsLogSerializer(data=data)
@@ -228,11 +231,17 @@ def dashboardlogs(request):
         UserActivity.location =  "[SomewherexWorld]"
       UserActivity.save()
       serializer = NsLogSerializer(nslogs, many=True)
-      start=str(date) + ':00Z'
+      #start=str(date) + ':00Z'
+      start=str(date) + ':00+01:00'
       end=serializer.data[0]['timestamp']
+      print("Start : ")
+      print(start) 
+      print("End : ")
+      print(end) 
       stamps = pd.date_range(start=start, end=end,freq='0H10T')
-      s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%SZ'))
+      s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
       data = dict(zip(s.index.format(), s))
+      #print(data)
       noactivity_logs = [ dict(user=user,date=simple_date,timestamp=date,last_signin='None',ip='None',active=False)  for  date, key in  data.items()]
       new_logs = noactivity_logs+find_inactivy(serializer.data)
       return JsonResponse(new_logs, safe=False)
@@ -254,24 +263,28 @@ def userdashboardlogs(request,email):
       nslogs = NsLog.objects.filter(user=email,date=datetime.date.today())
       ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
       serializer = NsLogSerializer(nslogs, many=True)
-      start=str(date) + ':00Z'
+      timezone = pytz.timezone("Africa/Porto-Novo")
+      start=str(date) + ':00+01:00'
       if len(serializer.data) > 0:
         end=serializer.data[0]['timestamp']
       else:
-        end=datetime.datetime.now((timezone.utc))
+        #end=datetime.datetime.now((timezone.utc))
+        end=datetime.datetime.now()
       stamps = pd.date_range(start=start, end=end,freq='0H10T')
-      s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%SZ'))
+      s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
       data = dict(zip(s.index.format(), s))
       noactivity_logs = [ dict(user=email,date=simple_date,timestamp=date,last_signin='None',ip='None',active=False)  for  date, key in  data.items()]
       new_logs = noactivity_logs+find_inactivy(serializer.data)
       nb_logs = len(new_logs)
-      endDiff_obj = datetime.datetime.strptime(datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ'), '%Y-%m-%dT%H:%M:%SZ')
+      #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ'), '%Y-%m-%dT%H:%M:%SZ')
+      endDiff_obj = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'), '%Y-%m-%dT%H:%M:%SZ')
       last_log_obj = datetime.datetime.strptime(new_logs[nb_logs - 1]['timestamp'], '%Y-%m-%dT%H:%M:%SZ')
       time_difference =  endDiff_obj - last_log_obj
       time_difference_in_minutes = time_difference / timedelta(minutes=1)
       if time_difference_in_minutes > 10:
         start=new_logs[nb_logs - 1]['timestamp']
-        end=datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        #end=datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        end=datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
         stamps = pd.date_range(start=start, end=end,freq='0H10T')
         s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%SZ'))
         data = dict(zip(s.index.format(), s))
