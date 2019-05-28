@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django_user_agents',
     'channels',
     'django_celery_beat',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -110,6 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 ASGI_APPLICATION = "checking.routing.application"
 
 # Internationalization
@@ -117,7 +119,7 @@ ASGI_APPLICATION = "checking.routing.application"
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Porto-Novo'
 
 USE_I18N = True
 
