@@ -33,13 +33,9 @@ def setup_periodic_tasks(sender, **kwargs):
 
 
 app.conf.beat_schedule = {
-    'add-every-5-seconds': {
-        'task': 'netsoul.tasks.add',
-        'schedule': 5.0
-    },
     'add-every-15-seconds': {
         'task': 'netsoul.tasks.update_user_list',
-        'schedule': 60.0
+        'schedule': 15.0
     },
 }
 
