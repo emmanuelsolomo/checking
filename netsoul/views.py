@@ -19,7 +19,7 @@ from datetime import timedelta
 from checking.celery import app
 import pytz
 
-def check_timedelta(data, time1, time2):
+def check_timedelta(data, time1, time2, ip):
   date_time1_obj = datetime.datetime.strptime(time1, '%Y-%m-%dT%H:%M:%S%z')
   date_time2_obj = datetime.datetime.strptime(time2, '%Y-%m-%dT%H:%M:%S%z')
   time_difference =  date_time1_obj - date_time2_obj
@@ -31,17 +31,17 @@ def check_timedelta(data, time1, time2):
     new_row = date_time2_obj    
     while shift < (time_difference_in_minutes / 5):      
       new_row = new_row + timedelta(minutes=5)
-      log = dict(user=data['user'],date=data['date'],timestamp=new_row.strftime('%Y-%m-%dT%H:%M:%SZ'),last_signin="None",ip="None",active=False)
+      log = dict(user=data['user'],date=data['date'],timestamp=new_row.strftime('%Y-%m-%dT%H:%M:%S%z'),last_signin=False,ip=ip,active=False)
       shift_array.append(log)
       shift = shift + 1
     
   return shift_array
 
-def find_inactivy(data):
+def find_inactivy(data, ip):
   current = 0
   while current < len(data):
     if current > 0:
-      shift_array = check_timedelta(data[current], data[current]['timestamp'], data[current - 1]['timestamp'])
+      shift_array = check_timedelta(data[current], data[current]['timestamp'], data[current - 1]['timestamp'], ip)
       if (len(shift_array) > 0):
         cpt = 0 
         index = current
@@ -98,8 +98,12 @@ def callback(request):
   store_token(request, token)
   store_user(request, user)
   _auth_completed(request, user)
-  log_time = datetime.datetime.now()
-  logtime = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M')
+  timezone = pytz.timezone("Africa/Porto-Novo")
+  log_time = timezone.localize(datetime.datetime.now())
+  logtime = log_time.strftime('%Y-%m-%dT%H:%M')
+
+  #log_time = datetime.datetime.now()
+  #logtime = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M')
   ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
   email = user=request.session['user']['email']
   data = dict(user=request.session['user']['email'],timestamp=logtime,last_signin=logtime, ip=ip,active=True)
@@ -242,8 +246,11 @@ def dashboardlogs(request):
       s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
       data = dict(zip(s.index.format(), s))
       #print(data)
-      noactivity_logs = [ dict(user=user,date=simple_date,timestamp=date,last_signin='None',ip='None',active=False)  for  date, key in  data.items()]
-      new_logs = noactivity_logs+find_inactivy(serializer.data)
+      #timezone = pytz.timezone("Africa/Porto-Novo")
+      #log_time = timezone.localize(datetime.datetime.now())
+      #logtime = log_time.strftime('%Y-%m-%dT%H:%M')
+      noactivity_logs = [ dict(user=user,date=simple_date,timestamp=date,last_signin=None,ip=ip,active=False)  for  date, key in  data.items()]
+      new_logs = noactivity_logs+find_inactivy(serializer.data, ip)
       return JsonResponse(new_logs, safe=False)
 
 
