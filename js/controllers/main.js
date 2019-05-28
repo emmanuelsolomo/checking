@@ -434,6 +434,7 @@ function trafficDemoCtrl($scope, $http, $stateParams) {
   .then(function (response){
     data = response.data;
     //dataValue = [];
+    console.log(data)
     for (var i = 0; i < data.length; i++) {
       y = 0
       if (data[i].active){
