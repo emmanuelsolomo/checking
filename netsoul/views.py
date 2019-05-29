@@ -281,13 +281,17 @@ def userdashboardlogs(request,email):
       ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
       serializer = NsLogSerializer(nslogs, many=True)
       timezone = pytz.timezone("Africa/Porto-Novo")
-#     start=str(date) + ':00+01:00'
-      start=str(date) + ':00'      
+      start=str(date) + ':00+01:00'
+#      start=str(date) + ':00'      
       if len(serializer.data) > 0:
         end=serializer.data[0]['timestamp']
       else:
         #end=datetime.datetime.now((timezone.utc))
         end=datetime.datetime.now()
+      print("Start : ")
+      print(start)
+      print("End : ")
+      print(end)        
       stamps = pd.date_range(start=start, end=end,freq='0H10T')
       s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
       data = dict(zip(s.index.format(), s))
@@ -296,10 +300,10 @@ def userdashboardlogs(request,email):
       nb_logs = len(new_logs)
       #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%S%zZ'), '%Y-%m-%dT%H:%M:%SZ')
       #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z'), '%Y-%m-%dT%H:%M:%S%z')
-      endDiff_obj = datetime.datetime.strptime(timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S%z'), '%Y-%m-%dT%H:%M:%S%z')
+      endDiff_obj = datetime.datetime.strptime(timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S'), '%Y-%m-%dT%H:%M:%S')
       print(timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S%z'))
       print(new_logs[nb_logs - 1]['timestamp'])
-      last_log_obj = datetime.datetime.strptime(new_logs[nb_logs - 1]['timestamp']+"+0100", '%Y-%m-%dT%H:%M:%S%z')
+      last_log_obj = datetime.datetime.strptime(new_logs[nb_logs - 1]['timestamp'].replace("+01:00", ""), '%Y-%m-%dT%H:%M:%S')
       time_difference =  endDiff_obj - last_log_obj
       time_difference_in_minutes = time_difference / timedelta(minutes=1)
       if time_difference_in_minutes > 10:
