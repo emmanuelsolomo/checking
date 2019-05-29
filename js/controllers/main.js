@@ -318,7 +318,7 @@ function UserTrafficDemoCtrl($scope, $http, $stateParams) {
       $scope.dataValue.push(y);
     }
   }).catch(function(response) {
-    console.error('Error occurred:', response.status, response.data);
+    console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
      //console.log("Task Finished.");
   })
@@ -450,7 +450,7 @@ function trafficDemoCtrl($scope, $http, $stateParams) {
       $scope.dataValue.push(y);
     }
   }).catch(function(response) {
-    console.error('Error occurred:', response.status, response.data);
+    console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
      //console.log("Task Finished.");
   })
@@ -753,7 +753,7 @@ function usersTableCtrl($scope, $timeout, $http) {
       }
     //$scope.dataPoints = dataPoints;
   }).catch(function(response) {
-    console.error('Error occurred:', response.status, response.data);
+    console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
      console.log("usersTableCtrl Task Finished.");
   })

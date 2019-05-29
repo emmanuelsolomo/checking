@@ -20,8 +20,15 @@ from checking.celery import app
 import pytz
 
 def check_timedelta(data, time1, time2, ip):
-  date_time1_obj = datetime.datetime.strptime(time1, '%Y-%m-%dT%H:%M:%S%z')
-  date_time2_obj = datetime.datetime.strptime(time2, '%Y-%m-%dT%H:%M:%S%z')
+  print("****************************************")
+  print(type(time1))
+  print(type(time2))  
+  print(time1.replace("+01:00", ""))
+  print(time2.replace("+01:00", ""))  
+  print("****************************************")
+  
+  date_time2_obj = datetime.datetime.strptime(time2.replace("+01:00", ""), '%Y-%m-%dT%H:%M:%S')
+  date_time1_obj = datetime.datetime.strptime(time1.replace("+01:00", ""), '%Y-%m-%dT%H:%M:%S')  
   time_difference =  date_time1_obj - date_time2_obj
 
   time_difference_in_minutes = time_difference / timedelta(minutes=1)
@@ -100,7 +107,7 @@ def callback(request):
   _auth_completed(request, user)
   timezone = pytz.timezone("Africa/Porto-Novo")
   log_time = timezone.localize(datetime.datetime.now())
-  logtime = log_time.strftime('%Y-%m-%dT%H:%M')
+  logtime = log_time.strftime('%Y-%m-%dT%H:%M:%S%z')
 
   #log_time = datetime.datetime.now()
   #logtime = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M')
@@ -174,7 +181,7 @@ def nslog(request):
 
         timezone = pytz.timezone("Africa/Porto-Novo")
         log_time = timezone.localize(datetime.datetime.now())
-        logtime = log_time.strftime('%Y-%m-%dT%H:%M')
+        logtime = log_time.strftime('%Y-%m-%dT%H:%M:%S%z')
         if not 'user' in request.session:
           remove_user_and_token(request)
           return HttpResponseRedirect(reverse('home'))
@@ -216,7 +223,7 @@ def dashboardlogs(request):
         sign_out(request)
         return HttpResponseRedirect(reverse('home'))        
       user = request.session['user']['email']
-      date = datetime.date.today().strftime('%Y-%m-%dT%H:%M')
+      date = datetime.date.today().strftime('%Y-%m-%dT%H:%M:%S%z')
       simple_date=datetime.date.today().strftime('%Y-%m-%d')    
       nslogs = NsLog.objects.filter(user=user,date=datetime.date.today())
       ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
@@ -235,8 +242,10 @@ def dashboardlogs(request):
         UserActivity.location =  "[SomewherexWorld]"
       UserActivity.save()
       serializer = NsLogSerializer(nslogs, many=True)
-      #start=str(date) + ':00Z'
-      start=str(date) + ':00+01:00'
+      #0Z'      start=str(date) +
+      start=str(date) + '+01:00'
+      #timezone = pytz.timezone("Africa/Porto-Novo")
+      #start=timezone.localize(datetime.date.today()).strftime('%Y-%m-%dT%H:%M:%S%z')
       end=serializer.data[0]['timestamp']
       print("Start : ")
       print(start) 
@@ -250,6 +259,7 @@ def dashboardlogs(request):
       #log_time = timezone.localize(datetime.datetime.now())
       #logtime = log_time.strftime('%Y-%m-%dT%H:%M')
       noactivity_logs = [ dict(user=user,date=simple_date,timestamp=date,last_signin=None,ip=ip,active=False)  for  date, key in  data.items()]
+      #print(noactivity_logs)
       new_logs = noactivity_logs+find_inactivy(serializer.data, ip)
       return JsonResponse(new_logs, safe=False)
 
@@ -271,7 +281,8 @@ def userdashboardlogs(request,email):
       ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
       serializer = NsLogSerializer(nslogs, many=True)
       timezone = pytz.timezone("Africa/Porto-Novo")
-      start=str(date) + ':00+01:00'
+#     start=str(date) + ':00+01:00'
+      start=str(date) + ':00'      
       if len(serializer.data) > 0:
         end=serializer.data[0]['timestamp']
       else:
@@ -280,20 +291,24 @@ def userdashboardlogs(request,email):
       stamps = pd.date_range(start=start, end=end,freq='0H10T')
       s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
       data = dict(zip(s.index.format(), s))
-      noactivity_logs = [ dict(user=email,date=simple_date,timestamp=date,last_signin='None',ip='None',active=False)  for  date, key in  data.items()]
-      new_logs = noactivity_logs+find_inactivy(serializer.data)
+      noactivity_logs = [ dict(user=email,date=simple_date,timestamp=date,last_signin='None',ip=ip,active=False)  for  date, key in  data.items()]
+      new_logs = noactivity_logs+find_inactivy(serializer.data, ip)
       nb_logs = len(new_logs)
-      #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ'), '%Y-%m-%dT%H:%M:%SZ')
-      endDiff_obj = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'), '%Y-%m-%dT%H:%M:%SZ')
-      last_log_obj = datetime.datetime.strptime(new_logs[nb_logs - 1]['timestamp'], '%Y-%m-%dT%H:%M:%SZ')
+      #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%S%zZ'), '%Y-%m-%dT%H:%M:%SZ')
+      #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z'), '%Y-%m-%dT%H:%M:%S%z')
+      endDiff_obj = datetime.datetime.strptime(timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S%z'), '%Y-%m-%dT%H:%M:%S%z')
+      print(timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S%z'))
+      print(new_logs[nb_logs - 1]['timestamp'])
+      last_log_obj = datetime.datetime.strptime(new_logs[nb_logs - 1]['timestamp']+"+0100", '%Y-%m-%dT%H:%M:%S%z')
       time_difference =  endDiff_obj - last_log_obj
       time_difference_in_minutes = time_difference / timedelta(minutes=1)
       if time_difference_in_minutes > 10:
         start=new_logs[nb_logs - 1]['timestamp']
+        print(start)
         #end=datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ')
-        end=datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+        end=timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S%z')
         stamps = pd.date_range(start=start, end=end,freq='0H10T')
-        s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%SZ'))
+        s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
         data = dict(zip(s.index.format(), s))
         logout_inactivity_logs = [ dict(user=email,date=simple_date,timestamp=date,last_signin='None',ip='None',active=False)  for  date, key in  data.items()]
         new_logs = new_logs + logout_inactivity_logs
