@@ -21,6 +21,7 @@ urlpatterns = [
   path('activity', views.getActivity,  name='activity'),
   path('getUserGroups', views.getUserGroups,  name='getUserGroups'),
   path('userInfo', views.getUserInfo,  name='userInfo'),
+  path('hello/', views.HelloView.as_view(), name='hello'),
 #  path('admin/', admin.site.urls),
 ]+ static(settings.NODE_MODULE_URL, document_root=settings.NODE_MODULE_ROOT) + static(settings.JS_URL, document_root=settings.JS_ROOT) + static(settings.VIEWS_URL, document_root=settings.VIEWS_ROOT) + static(settings.IMG_URL, document_root=settings.IMG_ROOT) + static(settings.CSS_URL, document_root=settings.CSS_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

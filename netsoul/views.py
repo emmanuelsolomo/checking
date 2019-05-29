@@ -17,7 +17,21 @@ import pandas as pd
 from datetime import timedelta
 #from django.utils import timezone
 from checking.celery import app
+from rest_framework import authentication
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated 
 import pytz
+
+
+class HelloView(APIView):
+    permission_classes = (IsAuthenticated,) 
+
+    def get(self, request):
+        content = {'message': 'Hello, World!'}
+        print(request.user)
+        return Response(content)
+
 
 def check_timedelta(data, time1, time2, ip):
   print("****************************************")
