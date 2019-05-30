@@ -46,13 +46,13 @@ def update_user_list(self):
                 UserActivity.active = False
                 UserActivity.last_seen = str(round(last_seen/60)) + " hours ago"
             if last_seen/60 > 24:
-                last_seen_in_days = round(last_seen/60)/24)
+                last_seen_in_days = round((last_seen/60)/24)
                 UserActivity.active = False
                 if last_seen_in_days > 1:
                     UserActivity.last_seen = str(last_seen_in_days) + "days ago"
                 else:
                     UserActivity.last_seen = "More than a day ago"
-        UserActivity.save()
+            UserActivity.save()
         else:
             print("No logs found for user  with email : " + user['email'], file=f)
             UserActivity.active = False
