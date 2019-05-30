@@ -29,18 +29,35 @@ class DashBoardManager(object):
         self.start=str(self.day)
         self.TzfullDayStart=str(self.fullDay) + '+01:00'
         self.end=self.serializer.data[0]['timestamp']
+        self.lastLog=self.serializer.data[self.nbLog - 1]['timestamp']
+        self.strLastlog=self.serializer.data[self.nbLog - 1]['timestamp']
         self.ip = ip
         self.email = email
         self.setNoActivityLogs()
         self.find_inactivy()
         self.timeShift = self.getTimeDiff()
         self.dashboardData = self.noActivityLogs +  self.dataUpdate
+        self.setLogOffActivityLogs()
 
     def setNoActivityLogs(self):
         stamps = pd.date_range(start=self.TzfullDayStart, end=self.end,freq='0H10T')
         serie = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
         data = dict(zip(serie.index.format(), serie))
-        self.noActivityLogs = [ dict(user=self.email,date=self.simpleDate,timestamp=self.date,last_signin=None,ip=None,active=False)  for  date, key in  data.items()]
+        self.noActivityLogs = [ dict(user=self.email,date=self.simpleDate,timestamp=timestamp,last_signin=None,ip=None,active=False)  for  timestamp, key in  data.items()]
+
+    def setLogOffActivityLogs(self):
+        endTime = datetime.datetime.strptime(self.StrLogtime, '%Y-%m-%dT%H:%M:%S')
+        lastLogTime = datetime.datetime.strptime(self.strLastlog.replace("+01:00", ""), '%Y-%m-%dT%H:%M:%S')
+        time_difference =  endTime - lastLogTime
+        time_difference_in_minutes = time_difference / timedelta(minutes=1)
+        if time_difference_in_minutes > 15:
+            start=self.strLastlog
+            end=self.TzStrLogtime
+            stamps = pd.date_range(start=start, end=end,freq='0H10T')
+            serie = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
+            data = dict(zip(serie.index.format(), serie))
+            logout_inactivity_logs = [ dict(user=self.email,date=self.simpleDate,timestamp=timestamp,last_signin=None,ip=None,active=False)  for  timestamp, key in  data.items()]
+            self.dashboardData  = self.dashboardData  + logout_inactivity_logs
 
     def findLogOffTime(self):
         stamps = pd.date_range(start=self.TzfullDayStart, end=self.end,freq='0H10T')

@@ -227,48 +227,14 @@ def userdashboardlogs(request,email):
       if 'user' not in request.session:
         sign_out(request)
         return HttpResponseRedirect(reverse('home'))
-      #date = datetime.date.today().strftime('%Y-%m-%dT%H:%M')
-      date = datetime.date.today().strftime('%Y-%m-%dT%H:%M')
-      simple_date=datetime.date.today().strftime('%Y-%m-%d')    
-      nslogs = NsLog.objects.filter(user=email,date=datetime.date.today())
       ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
-      serializer = NsLogSerializer(nslogs, many=True)
-      timezone = pytz.timezone("Africa/Porto-Novo")
-      start=str(date) #+ ':00+01:00'
-#      start=str(date) + ':00'      
-      if len(serializer.data) > 0:
-        start=str(date) + ':00+01:00'
-        end=serializer.data[0]['timestamp']
-      else:
-        #end=datetime.datetime.now((timezone.utc))
-        #end=timezone.localize(datetime.datetime.now())
-        end=datetime.datetime.now()
-      print("Start : ")
-      print(start)
-      print("End : ")
-      print(end)        
-      stamps = pd.date_range(start=start, end=end,freq='0H10T')
-      s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
-      data = dict(zip(s.index.format(), s))
-      noactivity_logs = [ dict(user=email,date=simple_date,timestamp=date,last_signin='None',ip=ip,active=False)  for  date, key in  data.items()]
-      new_logs = noactivity_logs+find_inactivy(serializer.data, ip)
-      nb_logs = len(new_logs)
-      #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%S%zZ'), '%Y-%m-%dT%H:%M:%SZ')
-      #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z'), '%Y-%m-%dT%H:%M:%S%z')
-      endDiff_obj = datetime.datetime.strptime(timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S'), '%Y-%m-%dT%H:%M:%S')
-      last_log_obj = datetime.datetime.strptime(new_logs[nb_logs - 1]['timestamp'].replace("+01:00", ""), '%Y-%m-%dT%H:%M:%S')
-      time_difference =  endDiff_obj - last_log_obj
-      time_difference_in_minutes = time_difference / timedelta(minutes=1)
-      if time_difference_in_minutes > 10:
-        start=new_logs[nb_logs - 1]['timestamp']
-        #end=datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ')
-        end=timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S%z')
-        stamps = pd.date_range(start=start, end=end,freq='0H10T')
-        s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
-        data = dict(zip(s.index.format(), s))
-        logout_inactivity_logs = [ dict(user=email,date=simple_date,timestamp=date,last_signin='None',ip='None',active=False)  for  date, key in  data.items()]
-        new_logs = new_logs + logout_inactivity_logs
-      return JsonResponse(new_logs, safe=False)
+      logMgr = LogManager(email, ip)
+      if  logMgr.nbLog == 0: 
+        sign_out(request)
+        return HttpResponseRedirect(reverse('home'))
+      dshLogs = DashBoardManager(email, ip)
+      logMgr.updateActivity()  
+      return JsonResponse(dshLogs.dashboardData, safe=False)
 
 @csrf_exempt
 def getActivity(request):
