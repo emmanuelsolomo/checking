@@ -40,10 +40,18 @@ class DashBoardManager(object):
         self.setLogOffActivityLogs()
 
     def setNoActivityLogs(self):
-        stamps = pd.date_range(start=self.TzfullDayStart, end=self.end,freq='0H10T')
+        if self.nbLog > 0:
+            end=self.end
+        else:
+            end=self.StrLogtime
+        stamps = pd.date_range(start=self.TzfullDayStart, end=end,freq='0H10T')
         serie = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
         data = dict(zip(serie.index.format(), serie))
+        for log in data:
+            print(log)
         self.noActivityLogs = [ dict(user=self.email,date=self.simpleDate,timestamp=timestamp,last_signin=None,ip=None,active=False)  for  timestamp, key in  data.items()]
+
+        
 
     def setLogOffActivityLogs(self):
         endTime = datetime.datetime.strptime(self.StrLogtime, '%Y-%m-%dT%H:%M:%S')

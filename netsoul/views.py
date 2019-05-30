@@ -229,7 +229,7 @@ def userdashboardlogs(request,email):
         return HttpResponseRedirect(reverse('home'))
       ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
       logMgr = LogManager(email, ip)
-      if  logMgr.nbLog == 0: 
+      if  logMgr.nbLog == 0 and email == request.session['user']['email']: 
         sign_out(request)
         return HttpResponseRedirect(reverse('home'))
       dshLogs = DashBoardManager(email, ip)
