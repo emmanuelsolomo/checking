@@ -45,9 +45,8 @@ class LogManager(object):
             serializer.save()
         elif serializer.is_valid() and not originWeb :
             serializer.save()   
-        else :
-            print("Error Saving logs")
-            print(serializer.errors)
+        elif serializer.is_valid():
+            print("Need more conditions to save logs")
 
     def getTimeDiff(self):
         if self.nbLog > 0:
