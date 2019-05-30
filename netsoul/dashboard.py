@@ -28,9 +28,10 @@ class DashBoardManager(object):
         self.TzStart=str(self.day) + '+01:00'
         self.start=str(self.day)
         self.TzfullDayStart=str(self.fullDay) + '+01:00'
-        self.end=self.serializer.data[0]['timestamp']
-        self.lastLog=self.serializer.data[self.nbLog - 1]['timestamp']
-        self.strLastlog=self.serializer.data[self.nbLog - 1]['timestamp']
+        self.end= self.StrLogtime if len(self.serializer.data) == 0 else self.serializer.data[0]['timestamp'] 
+        self.TzEnd= self.TzStrLogtime if len(self.serializer.data) == 0 else self.serializer.data[0]['timestamp']
+        self.lastLog=self.TzStrLogtime  if len(self.serializer.data) == 0   else self.serializer.data[self.nbLog - 1]['timestamp']
+        self.strLastlog=self.StrLogtime  if len(self.serializer.data) == 0 else  self.serializer.data[self.nbLog - 1]['timestamp']
         self.ip = ip
         self.email = email
         self.setNoActivityLogs()
@@ -40,15 +41,9 @@ class DashBoardManager(object):
         self.setLogOffActivityLogs()
 
     def setNoActivityLogs(self):
-        if self.nbLog > 0:
-            end=self.end
-        else:
-            end=self.StrLogtime
-        stamps = pd.date_range(start=self.TzfullDayStart, end=end,freq='0H10T')
+        stamps = pd.date_range(start=self.TzfullDayStart, end=self.TzEnd,freq='0H10T')
         serie = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
         data = dict(zip(serie.index.format(), serie))
-        for log in data:
-            print(log)
         self.noActivityLogs = [ dict(user=self.email,date=self.simpleDate,timestamp=timestamp,last_signin=None,ip=None,active=False)  for  timestamp, key in  data.items()]
 
         

@@ -232,8 +232,7 @@ def userdashboardlogs(request,email):
       if  logMgr.nbLog == 0 and email == request.session['user']['email']: 
         sign_out(request)
         return HttpResponseRedirect(reverse('home'))
-      dshLogs = DashBoardManager(email, ip)
-      logMgr.updateActivity()  
+      dshLogs = DashBoardManager(email, ip) 
       return JsonResponse(dshLogs.dashboardData, safe=False)
 
 @csrf_exempt
