@@ -34,6 +34,7 @@ int main(void)
   const char header_prefix[] = "Authorization: Token ";
   const char* token = getenv("TOKEN");
   const char* url = getenv("URL");
+  int cpt=0;
 
   printf("TOKEN :%s\n",(token!=NULL)? token : "getenv returned NULL");
   printf("URL :%s\n",(url!=NULL)? url : "getenv returned NULL");
@@ -79,8 +80,9 @@ int main(void)
 	fprintf(stderr, "curl_easy_perform() failed: %s\n",
 		curl_easy_strerror(res));
       /* always cleanup */ 
-      sleep(60);
+      sleep(300);
       printf("\n");
+      printf("Call number : %d\n", cpt++);
     }
     curl_easy_cleanup(curl);
   }
