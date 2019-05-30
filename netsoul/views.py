@@ -21,26 +21,24 @@ from rest_framework import authentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated 
+from .logs import LogManager
+from .dashboard import DashBoardManager
+from rest_framework import status
 import pytz
 
 
-class HelloView(APIView):
+class NsLogView(APIView):
     permission_classes = (IsAuthenticated,) 
 
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
+    def post(self, request, format=None):
         print(request.user)
-        return Response(content)
-
-
-def check_timedelta(data, time1, time2, ip):
-  print("****************************************")
-  print(type(time1))
-  print(type(time2))  
-  print(time1.replace("+01:00", ""))
-  print(time2.replace("+01:00", ""))  
-  print("****************************************")
-  
+        ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
+        logMgr = LogManager(str(request.user), ip)
+        logMgr.updateNsLog(originWeb=False)
+        logMgr.updateActivity()
+        return Response(dict(msg='Nslog table updated',status='Success'), status=status.HTTP_201_CREATED)
+            
+def check_timedelta(data, time1, time2, ip):  
   date_time2_obj = datetime.datetime.strptime(time2.replace("+01:00", ""), '%Y-%m-%dT%H:%M:%S')
   date_time1_obj = datetime.datetime.strptime(time1.replace("+01:00", ""), '%Y-%m-%dT%H:%M:%S')  
   time_difference =  date_time1_obj - date_time2_obj
@@ -89,7 +87,6 @@ def initialize_context(request):
 
 def home(request):
   context = initialize_context(request)
-  print("User requesting home/login page ")
   if 'user' in request.session:
     return HttpResponseRedirect(reverse('dashboard'))
 
@@ -129,7 +126,6 @@ def callback(request):
   email = user=request.session['user']['email']
   data = dict(user=request.session['user']['email'],timestamp=logtime,last_signin=logtime, ip=ip,active=True)
   serializer = NsLogSerializer(data=data)
-  print("Signin In")
   if serializer.is_valid():
     serializer.save()
     UserActivity = O365User.objects.get(email=email)
@@ -137,12 +133,10 @@ def callback(request):
     UserActivity.last_activity = log_time
     UserActivity.last_seen = "less than a minute ago"
     UserActivity.save()
-  print("Signed In")    
   return HttpResponseRedirect(reverse('dashboard'))
 
 def sign_out(request):
   # Clear out the user and token
-  print("In Sign Out")
   _logout_completed(request)
   remove_user_and_token(request)
 
@@ -191,41 +185,18 @@ def nslog(request):
         print(request.user_agent.os.family)
         print(request.user_agent.os.version)
         ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
-        #log_time = datetime.datetime.now(timezone.utc)
-
-        timezone = pytz.timezone("Africa/Porto-Novo")
-        log_time = timezone.localize(datetime.datetime.now())
-        logtime = log_time.strftime('%Y-%m-%dT%H:%M:%S%z')
         if not 'user' in request.session:
           remove_user_and_token(request)
           return HttpResponseRedirect(reverse('home'))
         else:
-          print("User in Session already")
           user = request.session['user']['email']
-          data = dict(user=user,timestamp=logtime,ip=ip,active=True)
-          nslogs = NsLog.objects.filter(user=user,date=datetime.date.today())
-          log_length = len(nslogs)
-          UserActivity = O365User.objects.get(email=user)
-          UserActivity.active = True
-          UserActivity.last_activity = log_time
-          if log_length > 0: 
-            time_difference = log_time - nslogs[log_length - 1].timestamp
-            time_difference_in_minutes = time_difference / timedelta(minutes=1)
-            serializer = NsLogSerializer(data=data)
-            UserActivity.last_seen = str(round(time_difference_in_minutes)) + " minutes ago"
-            if ip == "137.255.10.29" or ip == "41.85.161.132":
-              UserActivity.location = "[EPITECHxSemeCity][2nd Floor] HEAP"
-            elif ip == "137.255.8.213":
-              UserActivity.location = "[EPITECHxSemeCity][Ground Floor] ADM"
-            else:
-              UserActivity.location = "[SomewherexWorld]"
-            UserActivity.save()        
-            if serializer.is_valid() and time_difference_in_minutes >= 5:
-              serializer.save()
-            return JsonResponse(serializer.data, safe=False)
+          logMgr = LogManager(user, ip)
+          if  logMgr.nbLog > 0: 
+            logMgr.updateNsLog()
+            logMgr.updateActivity()
+            return HttpResponseRedirect(reverse('home'))
           remove_user_and_token(request)
           return HttpResponseRedirect(reverse('home'))        
-
 
 @csrf_exempt
 def dashboardlogs(request):
@@ -237,45 +208,14 @@ def dashboardlogs(request):
         sign_out(request)
         return HttpResponseRedirect(reverse('home'))        
       user = request.session['user']['email']
-      date = datetime.date.today().strftime('%Y-%m-%dT%H:%M:%S%z')
-      simple_date=datetime.date.today().strftime('%Y-%m-%d')    
-      nslogs = NsLog.objects.filter(user=user,date=datetime.date.today())
       ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
-      if len(nslogs) == 0:
+      logMgr = LogManager(user, ip)
+      if  logMgr.nbLog == 0: 
         sign_out(request)
         return HttpResponseRedirect(reverse('home'))
-      UserActivity = O365User.objects.get(email=user)
-      UserActivity.active = True
-      UserActivity.last_activity =  datetime.datetime.now()
-      UserActivity.last_seen = "less than a minute ago"
-      if ip == "137.255.10.29" or ip == "41.85.161.132":
-        UserActivity.location = "[EPITECHxSemeCity][2nd Floor] HEAP"
-      elif ip == "137.255.8.213":
-        UserActivity.location = "[EPITECHxSemeCity][Ground Floor] ADM"
-      else:
-        UserActivity.location =  "[SomewherexWorld]"
-      UserActivity.save()
-      serializer = NsLogSerializer(nslogs, many=True)
-      #0Z'      start=str(date) +
-      start=str(date) + '+01:00'
-      #timezone = pytz.timezone("Africa/Porto-Novo")
-      #start=timezone.localize(datetime.date.today()).strftime('%Y-%m-%dT%H:%M:%S%z')
-      end=serializer.data[0]['timestamp']
-      print("Start : ")
-      print(start) 
-      print("End : ")
-      print(end) 
-      stamps = pd.date_range(start=start, end=end,freq='0H10T')
-      s = pd.Series('timestamp', index=stamps.strftime('%Y-%m-%dT%H:%M:%S%z'))
-      data = dict(zip(s.index.format(), s))
-      #print(data)
-      #timezone = pytz.timezone("Africa/Porto-Novo")
-      #log_time = timezone.localize(datetime.datetime.now())
-      #logtime = log_time.strftime('%Y-%m-%dT%H:%M')
-      noactivity_logs = [ dict(user=user,date=simple_date,timestamp=date,last_signin=None,ip=ip,active=False)  for  date, key in  data.items()]
-      #print(noactivity_logs)
-      new_logs = noactivity_logs+find_inactivy(serializer.data, ip)
-      return JsonResponse(new_logs, safe=False)
+      dshLogs = DashBoardManager(user, ip)
+      logMgr.updateActivity()  
+      return JsonResponse(dshLogs.dashboardData, safe=False)
 
 
 @csrf_exempt
@@ -287,20 +227,21 @@ def userdashboardlogs(request,email):
       if 'user' not in request.session:
         sign_out(request)
         return HttpResponseRedirect(reverse('home'))
-      print("Request params : Email : " + email)
-
+      #date = datetime.date.today().strftime('%Y-%m-%dT%H:%M')
       date = datetime.date.today().strftime('%Y-%m-%dT%H:%M')
       simple_date=datetime.date.today().strftime('%Y-%m-%d')    
       nslogs = NsLog.objects.filter(user=email,date=datetime.date.today())
       ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
       serializer = NsLogSerializer(nslogs, many=True)
       timezone = pytz.timezone("Africa/Porto-Novo")
-      start=str(date) + ':00+01:00'
+      start=str(date) #+ ':00+01:00'
 #      start=str(date) + ':00'      
       if len(serializer.data) > 0:
+        start=str(date) + ':00+01:00'
         end=serializer.data[0]['timestamp']
       else:
         #end=datetime.datetime.now((timezone.utc))
+        #end=timezone.localize(datetime.datetime.now())
         end=datetime.datetime.now()
       print("Start : ")
       print(start)
@@ -315,14 +256,11 @@ def userdashboardlogs(request,email):
       #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%S%zZ'), '%Y-%m-%dT%H:%M:%SZ')
       #endDiff_obj = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z'), '%Y-%m-%dT%H:%M:%S%z')
       endDiff_obj = datetime.datetime.strptime(timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S'), '%Y-%m-%dT%H:%M:%S')
-      print(timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S%z'))
-      print(new_logs[nb_logs - 1]['timestamp'])
       last_log_obj = datetime.datetime.strptime(new_logs[nb_logs - 1]['timestamp'].replace("+01:00", ""), '%Y-%m-%dT%H:%M:%S')
       time_difference =  endDiff_obj - last_log_obj
       time_difference_in_minutes = time_difference / timedelta(minutes=1)
       if time_difference_in_minutes > 10:
         start=new_logs[nb_logs - 1]['timestamp']
-        print(start)
         #end=datetime.datetime.now((timezone.utc)).strftime('%Y-%m-%dT%H:%M:%SZ')
         end=timezone.localize(datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%S%z')
         stamps = pd.date_range(start=start, end=end,freq='0H10T')
@@ -362,11 +300,8 @@ def getUserGroups(request):
       tek3 = 0
       staff = 0
       for user in serializer.data:
-        #print(user)
         if (user['group'] == 'STAFF' and user['active'] == True):
-          print("Found user in staff")
           staff = staff + 1
-          print("nb staff : " + str(staff))
         if (user['group'] == 'Tek1' and user['active'] == True):
           tek1 = tek1 + 1
         if (user['group'] == 'Tek2' and user['active'] == True):
