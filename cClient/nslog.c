@@ -80,7 +80,7 @@ int main(void)
 	fprintf(stderr, "curl_easy_perform() failed: %s\n",
 		curl_easy_strerror(res));
       /* always cleanup */ 
-      sleep(10);
+      sleep(300);
       printf("\n");
       printf("Call number : %d\n", cpt++);
     }
