@@ -25,11 +25,12 @@ from .logs import LogManager
 from .dashboard import DashBoardManager
 from rest_framework import status
 import pytz
+from rest_framework.authentication import TokenAuthentication
 
 
-@authentication_classes((SessionAuthentication, TokenAuthentication, BasicAuthentication))
 class NsLogView(APIView):
     permission_classes = (IsAuthenticated,) 
+    authentication_classes = (TokenAuthentication, )
 
     def post(self, request, format=None):
         print(request.user)
