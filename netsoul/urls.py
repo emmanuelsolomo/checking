@@ -3,7 +3,7 @@ from django.conf import settings
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.views.static import serve
-
+from rest_framework.authtoken import views as rest_framework_views
 
 from . import views
 
@@ -21,6 +21,7 @@ urlpatterns = [
   path('getUserGroups', views.getUserGroups,  name='getUserGroups'),
   path('userInfo', views.getUserInfo,  name='userInfo'),
   path('logs', views.NsLogView.as_view(), name='logs'),
+  path('get_auth_token', rest_framework_views.obtain_auth_token, name='get_auth_token'),
 ]+ static(settings.NODE_MODULE_URL, document_root=settings.NODE_MODULE_ROOT) + static(settings.JS_URL, document_root=settings.JS_ROOT) + static(settings.VIEWS_URL, document_root=settings.VIEWS_ROOT) + static(settings.IMG_URL, document_root=settings.IMG_ROOT) + static(settings.CSS_URL, document_root=settings.CSS_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
