@@ -65,8 +65,8 @@ int main(void)
 
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
     curl_easy_setopt(curl, CURLOPT_URL, url);
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
+    /*curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);*/
     /*Now specify the POST data */
 
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "client=nsloger");     
@@ -80,7 +80,7 @@ int main(void)
 	fprintf(stderr, "curl_easy_perform() failed: %s\n",
 		curl_easy_strerror(res));
       /* always cleanup */ 
-      sleep(300);
+      sleep(10);
       printf("\n");
       printf("Call number : %d\n", cpt++);
     }

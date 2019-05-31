@@ -27,6 +27,7 @@ from rest_framework import status
 import pytz
 
 
+@authentication_classes((SessionAuthentication, TokenAuthentication, BasicAuthentication))
 class NsLogView(APIView):
     permission_classes = (IsAuthenticated,) 
 
