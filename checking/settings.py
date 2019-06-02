@@ -59,7 +59,12 @@ MIDDLEWARE = [
     'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
+#CORS_ORIGIN_WHITELIST = [
+#    "http://localhost:4000",
+#    "http://127.0.0.1:4000"
+#]
 
+CORS_ORIGIN_ALLOW_ALL = True # added to solve CORS
 
 ROOT_URLCONF = 'checking.urls'
 
