@@ -272,11 +272,11 @@ def getUserGroups(request):
       for user in serializer.data:
         if (user['group'] == 'STAFF' and user['active'] == True):
           staff = staff + 1
-        if (user['group'] == 'Tek1' and user['active'] == True):
+        if (user['group'] == 'TEK1' and user['active'] == True):
           tek1 = tek1 + 1
-        if (user['group'] == 'Tek2' and user['active'] == True):
+        if (user['group'] == 'TEK2' and user['active'] == True):
           tek2 = tek2 + 1
-        if (user['group'] == 'Tek3' and user['active'] == True):
+        if (user['group'] == 'TEK3' and user['active'] == True):
           tek3 = tek3
       return JsonResponse(dict(staff=staff,tek1=tek1,tek2=tek2,tek3=tek3), safe=False)
 
