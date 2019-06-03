@@ -1,0 +1,16 @@
+[Unit]
+Description=AEIG Netsoul Service
+After=network.target 
+
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/aeig/netsoul.cfg
+ExecStart=/usr/bin/nsloger
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
