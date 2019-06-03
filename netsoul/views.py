@@ -20,13 +20,20 @@ from checking.celery import app
 from rest_framework import authentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated 
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
 from .logs import LogManager
 from .dashboard import DashBoardManager
 from rest_framework import status
 import pytz
 
+
+
 class NsLogView(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
         print(request.user)
@@ -286,4 +293,90 @@ def getUserInfo(request):
       user = O365User.objects.filter(email=request.session['user']['email'])
       UserSerializer = O365UserSerializer(user, many=True)
       return JsonResponse(UserSerializer.data, safe=False)
+
+class UserInfoView(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):
+        print("In API User : ")
+        print(request.user)
+
+        user = O365User.objects.filter(email=request.user)
+        UserSerializer = O365UserSerializer(user, many=True)
+        return Response(UserSerializer.data, status=status.HTTP_200_OK)
+
+class TokenView(APIView):
+
+    def get(self, request, format=None):
+        print(request.GET.get('user'))
+        email = request.GET.get('user')
+        user = User.objects.get(username=email)
+        qs=Token.objects.filter(user=user)
+        token=qs[0]
+        #token=dict(key='hello')
+        print(token.__dict__)
+        return Response(dict(token=token.key,status='Success'), status=status.HTTP_200_OK)
+
+
+class DashBoardLogView(APIView):
+    """
+      Return all nslog for a given user 
+    """
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):      
+        user = request.user
+        ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
+        logMgr = LogManager(user.username, ip)
+        dshLogs = DashBoardManager(user.username, ip)
+        logMgr.updateActivity()  
+        return Response(dshLogs.dashboardData, status=status.HTTP_200_OK)
+
+class UserLogView(APIView):
+    """
+      Return all nslog for a given user 
+    """
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request,  format=None):
+      email = request.GET.get('email')
+      ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
+      dshLogs = DashBoardManager(email, ip) 
+      print("GGGG")
+      return JsonResponse(dshLogs.dashboardData, safe=False)
+
+
+
+class GroupInfoView(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):
+      groups = O365User.objects.all()
+      serializer = O365UserSerializer(groups, many=True)
+      tek1, tek2, tek3, staff = (0, 0, 0, 0)
+      for user in serializer.data:
+        if (user['group'] == 'STAFF' and user['active'] == True):
+          staff = staff + 1
+        if (user['group'] == 'TEK1' and user['active'] == True):
+          tek1 = tek1 + 1
+        if (user['group'] == 'TEK2' and user['active'] == True):
+          tek2 = tek2 + 1
+        if (user['group'] == 'TEK3' and user['active'] == True):
+          tek3 = tek3
+      return JsonResponse(dict(staff=staff,tek1=tek1,tek2=tek2,tek3=tek3), safe=False)
+
+
+class activityView(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):
+      activity = O365User.objects.all()
+      serializer = O365UserSerializer(activity, many=True)
+      activityData = dict(data=serializer.data,email=request.session['user']['email'])
+      return JsonResponse(activityData, safe=False)
 
