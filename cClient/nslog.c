@@ -33,12 +33,10 @@ int main(void)
   char *header;
   const char header_prefix[] = "Authorization: Token ";
   const char* token = getenv("TOKEN");
-  const char* url = getenv("URL");
   int cpt=0;
 
-  printf("TOKEN :%s\n",(token!=NULL)? token : "getenv returned NULL");
-  printf("URL :%s\n",(url!=NULL)? url : "getenv returned NULL");
 
+  printf("TOKEN :%s\n",(token!=NULL)? token : "getenv returned NULL");
 
   header = malloc(strlen(header_prefix) + strlen(token) + 1);
   if (!header) {
@@ -64,7 +62,7 @@ int main(void)
     chunk = curl_slist_append(chunk, header);
 
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_URL, "https://netsoul.owaale.com/logs");
     /*curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
       curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);*/
     /*Now specify the POST data */
