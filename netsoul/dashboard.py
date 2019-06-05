@@ -53,7 +53,7 @@ class DashBoardManager(object):
         lastLogTime = datetime.datetime.strptime(self.strLastlog.replace("+01:00", ""), '%Y-%m-%dT%H:%M:%S')
         time_difference =  endTime - lastLogTime
         time_difference_in_minutes = time_difference / timedelta(minutes=1)
-        if time_difference_in_minutes > 15:
+        if time_difference_in_minutes > 7:
             start=self.strLastlog
             end=self.TzStrLogtime
             stamps = pd.date_range(start=start, end=end,freq='0H10T')
@@ -82,7 +82,7 @@ class DashBoardManager(object):
 
         time_difference_in_minutes = time_difference / timedelta(minutes=1)
         shift_array = []
-        if (time_difference_in_minutes > 15):    
+        if (time_difference_in_minutes > 7):    
             shift = 1
             new_row = date_time2_obj
             while shift < (time_difference_in_minutes / 5):      
