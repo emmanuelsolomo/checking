@@ -39,7 +39,7 @@ def update_user_list(self):
             time_difference = log_time - last_timestamp
             last_seen = time_difference / timedelta(minutes=1)
             last_seen_in_hours = last_seen/60
-            if last_seen < 60 and last_seen > 8:
+            if last_seen < 60 and last_seen > 5:
                 UserActivity.active = False
                 UserActivity.last_seen = str(round(last_seen)) + " minutes ago"
                 UserActivity.location = "N/A"                                            

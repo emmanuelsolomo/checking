@@ -27,7 +27,8 @@ class LogManager(object):
     def updateActivity(self, last_signin=None):
         self.UserActivity.active = True
         self.UserActivity.last_activity = self.logtime
-        self.UserActivity.last_seen = str(round(self.timeShift)) + " minutes ago"
+        #self.UserActivity.last_seen = str(round(self.timeShift)) + " minutes ago"
+        self.UserActivity.last_seen = "Just now"
         if self.ip == "137.255.10.29" or self.ip == "41.85.161.132":
             self.UserActivity.location = "[EPITECHxSemeCity]"
         elif self.ip == "137.255.8.213":
