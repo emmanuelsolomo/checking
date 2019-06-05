@@ -29,12 +29,10 @@ class LogManager(object):
         self.UserActivity.last_activity = self.logtime
         #self.UserActivity.last_seen = str(round(self.timeShift)) + " minutes ago"
         self.UserActivity.last_seen = "Just now"
-        if self.ip == "137.255.10.29" or self.ip == "41.85.161.132":
-            self.UserActivity.location = "[EPITECHxSemeCity]"
-        elif self.ip == "137.255.8.213":
-            self.UserActivity.location = "[EPITECHxSemeCity]"
+        if self.ip == "137.255.10.29" or self.ip == "41.85.161.132" or self.ip == "137.255.8.213":
+            self.UserActivity.location = "[EPITECH]"
         else:
-            self.UserActivity.location = "[SomewherexWorld]"
+            self.UserActivity.location = "[Somewhere]"
         self.UserActivity.save()
 
     def updateNsLog(self,last_signin='None', originWeb=True):
