@@ -11,6 +11,7 @@ import pytz
 class DashBoardManager(object):
     """Log and Activity Manager """
     def __init__(self, email, ip=None):
+        print("#####Email : <" + email + ">********************######" )
         self.UserActivity = O365User.objects.get(email=email)
         self.timezone = pytz.timezone("Africa/Porto-Novo")
         self.now = datetime.datetime.now()

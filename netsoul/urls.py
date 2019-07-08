@@ -26,6 +26,7 @@ urlpatterns = [
   path('api/token', views.TokenView.as_view(), name='getToken'),
   path('api/dashboardlogs', views.DashBoardLogView.as_view(), name='dashboardlogs'),
   path('api/userlogs', views.UserLogView.as_view(), name='userlogs'),
+  path('api/control', views.ControlLogView.as_view(), name='controllogs'),
   path('get_auth_token', rest_framework_views.obtain_auth_token, name='get_auth_token'),
 ]+ static(settings.NODE_MODULE_URL, document_root=settings.NODE_MODULE_ROOT) + static(settings.JS_URL, document_root=settings.JS_ROOT) + static(settings.VIEWS_URL, document_root=settings.VIEWS_ROOT) + static(settings.IMG_URL, document_root=settings.IMG_ROOT) + static(settings.CSS_URL, document_root=settings.CSS_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

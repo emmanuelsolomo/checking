@@ -26,6 +26,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from .logs import LogManager
 from .dashboard import DashBoardManager
+from .control import ControlManager
 from rest_framework import status
 import pytz
 
@@ -344,6 +345,9 @@ class UserLogView(APIView):
     def get(self, request,  format=None):
       email = request.GET.get('email')
       ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
+      print("BEFORE")
+      print(request.user)
+      print("AFTER")
       dshLogs = DashBoardManager(email, ip) 
       print("GGGG")
       return JsonResponse(dshLogs.dashboardData, safe=False)
@@ -380,3 +384,21 @@ class activityView(APIView):
       activityData = dict(data=serializer.data,email=request.session['user']['email'])
       return JsonResponse(activityData, safe=False)
 
+
+class ControlLogView(APIView):
+    """
+      Return all nslog for a given user 
+    """
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request,  format=None):
+      print("In Control")
+      email = request.GET.get('email')
+      type = request.GET.get('type')
+      day = request.GET.get('day')
+      ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
+      control = ControlManager(email, ip) 
+      if(type == 'weekly'): 
+        control.getWeeklyLogs(day)
+      return JsonResponse(dict(logs=control.weekly_logs), safe=False)
