@@ -12,9 +12,9 @@
         </div>
         <!--/.col-->
         <div class="col-sm-7 d-none d-md-block">
-          <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
-
-          </div>
+            <button type="submit" class="btn btn-danger float-right" ng-click="updateType('monthly')"  >Monthly</button>
+            <button type="submit" class="btn btn-secondary float-right" ng-click="updateType('weekly')"  >Weekly</button>
+            <button type="submit" class="btn btn-primary float-right" ng-click="updateType('daily')"  >Daily</button>
         </div>
         <!--/.col-->
       </div>
@@ -22,8 +22,10 @@
       <div class="chart-wrapper" style="height:300px;margin-top:40px;">
         <!--/<canvas class="chart chart-line" chart-data="dataPoints" chart-labels="labelsX" chart-legend="false" chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors" height="300"></canvas>
         -->
-        <canvas class="chart chart-line" chart-data="dataValue" chart-labels="dataLabels" chart-legend="false" chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors" height="300"></canvas>
-
+       <!--/ <canvas class="chart chart-line" chart-data="dataValue" chart-labels="dataLabels" chart-legend="false" chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors" height="300"></canvas>
+       -->
+       <canvas ng-if="type==='weekly'" class="chart chart-line" chart-data="WeeklydataValue" chart-labels="day_labels" chart-legend="false" chart-series="series" chart-options="ControlOptions" chart-colors="colors" height="300"></canvas>
+       <canvas ng-if="type==='daily'" class="chart chart-line" chart-data="dataValue" chart-labels="dataLabels" chart-legend="false" chart-series="series" chart-click="onClick" chart-options="options" chart-colors="colors" height="300"></canvas>
       </div>
     </div>
     <div class="card-footer">

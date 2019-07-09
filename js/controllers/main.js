@@ -37,12 +37,12 @@ function cardChartCtrl1($scope, $http) {
     data = [ response.data['tek1'],  response.data['tek1'],  response.data['tek1'],  response.data['tek1'], response.data['tek1'], response.data['tek1'], response.data['tek1']]
     $scope.tek1  = response.data['tek1'];
   }).catch(function(response) {
-    console.log('Error occurred:', response.status, response.data);
+    //console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
-     console.log("Task Finished.");
+     //console.log("Task Finished.");
   })
 
-  console.log("Nb tek 1 = " + $scope.tek1  );
+  //console.log("Nb tek 1 = " + $scope.tek1  );
   $scope.labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
   $scope.data = data;
 
@@ -98,9 +98,9 @@ function cardChartCtrl2($scope, $http) {
     data = [ response.data['tek2'],  response.data['tek2'],  response.data['tek2'],  response.data['tek2'], response.data['tek2'], response.data['tek2'], response.data['tek2']]
     $scope.tek2 = response.data['tek2'];
   }).catch(function(response) {
-    console.log('Error occurred:', response.status, response.data);
+    //console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
-     console.log("Task Finished.");
+     //console.log("Task Finished.");
   })
 
 
@@ -162,9 +162,9 @@ function cardChartCtrl3($scope, $http) {
     data = [ response.data['tek3'],  response.data['tek3'],  response.data['tek3'],  response.data['tek3'], response.data['tek3'], response.data['tek3'], response.data['tek3']]
     $scope.tek3 = response.data['tek3'];
   }).catch(function(response) {
-    console.log('Error occurred:', response.status, response.data);
+    //console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
-     console.log("Task Finished.");
+     //console.log("Task Finished.");
   })
 
 
@@ -228,9 +228,9 @@ function cardChartCtrl4($scope, $http) {
     data = [ response.data['staff'],  response.data['staff'],  response.data['staff'],  response.data['staff'], response.data['staff'], response.data['staff'], response.data['staff']]
     $scope.staff = response.data['staff'];
   }).catch(function(response) {
-    console.log('Error occurred:', response.status, response.data);
+    //console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
-     console.log("Task Finished.");
+     //console.log("Task Finished.");
   })
 
 
@@ -261,6 +261,17 @@ UserTrafficDemoCtrl.$inject = ['$scope', '$http', '$stateParams'];
 function UserTrafficDemoCtrl($scope, $http, $stateParams) {
 
   $scope.date = moment().format('MM/DD/YYYY');
+  $scope.type = 'daily';
+  $scope.daily = true;
+  $scope.weekly = false;
+
+
+  $scope.day_labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
+
+  $scope.updateType = function (type) {
+    $scope.type = type;
+   };
+
 
   function newDate(days) {
     return moment().add(days, 'd').toDate();
@@ -280,8 +291,8 @@ function UserTrafficDemoCtrl($scope, $http, $stateParams) {
   var data3 = [];
 
 
-  console.log("Params :")
-  console.log($stateParams)
+  //console.log("Params :")
+  //console.log($stateParams)
   
 
   //$.getJSON("/dashboardlogs", setDataPoints);
@@ -289,6 +300,7 @@ function UserTrafficDemoCtrl($scope, $http, $stateParams) {
 
   var dataPoints = [];
   var dataLabels = [];
+  $scope.day_labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
   var dataValue = [];
 
   data = [];
@@ -318,14 +330,37 @@ function UserTrafficDemoCtrl($scope, $http, $stateParams) {
       $scope.dataValue.push(y);
     }
   }).catch(function(response) {
+    //console.log('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     //console.log("Task Finished.");
+  })
+}
+
+$scope.WeeklydataValue = [];
+
+function setWeeklyDataPoints() {
+  //dataValue = [];
+  //$scope.WeeklydataValue = []
+  $http.get('/controllogs?type=other&day=today&email=' + $stateParams['email'])
+  .then(function (response){
+    $scope.WeeklydataValue = response.data;
+    console.log("$scope.WeeklydataValue");
+    console.log($scope.WeeklydataValue)
+
+  }).catch(function(response) {
     console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
      //console.log("Task Finished.");
   })
 }
 
+function epoch_to_hh_mm_ss(epoch) {
+  return new Date(epoch*1000).toISOString().substr(12, 7)
+}
 
-  var interval = setInterval(setDataPoints(), 5000);
+var interval = setInterval(setDataPoints(), 5000);
+var new_interval = setInterval(setWeeklyDataPoints(), 15000);
+  
 
   for (var i = 0; i <= elements; i++) {
     data1.push(random(150,250));
@@ -385,6 +420,31 @@ function UserTrafficDemoCtrl($scope, $http, $stateParams) {
       }
     },
   }
+
+  $scope.ControlOptions = {
+    responsive: true,
+    title: {
+      display: true,
+      text: 'Connection Time Log'
+    },
+    maintainAspectRatio: false,
+    scales: {
+      yAxes: [{
+        ticks: {
+          userCallback: function(v) { return epoch_to_hh_mm_ss(v) },
+          stepSize: 30 * 60
+        }
+      }]
+    },
+    tooltips: {
+      callbacks: {
+        label: function(tooltipItem, data) {
+          return data.datasets[tooltipItem.datasetIndex].label + ': ' + epoch_to_hh_mm_ss(tooltipItem.yLabel)
+        }
+      }
+    },
+  }
+
 }
 
 
@@ -393,6 +453,14 @@ trafficDemoCtrl.$inject = ['$scope', '$http', '$stateParams'];
 function trafficDemoCtrl($scope, $http, $stateParams) {
 
   $scope.date = moment().format('MM/DD/YYYY');
+  $scope.week = moment().format('YYYY-MM-DD');
+  $scope.type = 'daily';
+  $scope.daily = true;
+  $scope.weekly = false;
+
+ $scope.updateType = function (type) {
+  $scope.type = type;
+ };
 
   function newDate(days) {
     return moment().add(days, 'd').toDate();
@@ -420,12 +488,15 @@ function trafficDemoCtrl($scope, $http, $stateParams) {
 
 
   var dataPoints = [];
+  var WeeklydataPoints = [];
   var dataLabels = [];
   var dataValue = [];
+  $scope.day_labels = ['Monday','Tuesday','Wednesday','Thursay','Friday','Saturday','Sunday'];
 
   data = [];
   //$scope.tek3 = 22;
   dataPoints = [];
+  WeekdataPoints = [];
 
   function setDataPoints() {
   //dataValue = [];
@@ -434,7 +505,7 @@ function trafficDemoCtrl($scope, $http, $stateParams) {
   .then(function (response){
     data = response.data;
     //dataValue = [];
-    console.log(data)
+    //console.log(data)
     for (var i = 0; i < data.length; i++) {
       y = 0
       if (data[i].active){
@@ -456,8 +527,30 @@ function trafficDemoCtrl($scope, $http, $stateParams) {
   })
 }
 
+$scope.WeeklydataValue = [];
 
-  var interval = setInterval(setDataPoints(), 5000);
+function setWeeklyDataPoints() {
+  //dataValue = [];
+  //$scope.WeeklydataValue = []
+  $http.get('/controllogs?type=main&day=today')
+  .then(function (response){
+    $scope.WeeklydataValue = response.data;
+    console.log("$scope.WeeklydataValue");
+    console.log($scope.WeeklydataValue)
+
+  }).catch(function(response) {
+    console.log('Error occurred:', response.status, response.data);
+  }).finally(function() {
+     //console.log("Task Finished.");
+  })
+}
+
+function epoch_to_hh_mm_ss(epoch) {
+  return new Date(epoch*1000).toISOString().substr(12, 7)
+}
+
+var interval = setInterval(setDataPoints(), 5000);
+var new_interval = setInterval(setWeeklyDataPoints(), 15000);
 
   for (var i = 0; i <= elements; i++) {
     data1.push(random(150,250));
@@ -466,11 +559,10 @@ function trafficDemoCtrl($scope, $http, $stateParams) {
   }
 
   $scope.labelsX = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Thursday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  $scope.series = ['Current', 'Previous', 'BEP'];
+  $scope.series = ['Current', 'Other', 'None']
   $scope.newSeries = ['Log'];
   $scope.data = [ data1, data2, data3];
   $scope.dataLabels = dataLabels;
-  //$scope.dataValue = dataValue;
 
   $scope.colors = ['blue'];
   $scope.options = {
@@ -517,6 +609,31 @@ function trafficDemoCtrl($scope, $http, $stateParams) {
       }
     },
   }
+
+  $scope.ControlOptions = {
+    responsive: true,
+    title: {
+      display: true,
+      text: 'Connection Time Log'
+    },
+    maintainAspectRatio: false,
+    scales: {
+      yAxes: [{
+        ticks: {
+          userCallback: function(v) { return epoch_to_hh_mm_ss(v) },
+          stepSize: 30 * 60
+        }
+      }]
+    },
+    tooltips: {
+      callbacks: {
+        label: function(tooltipItem, data) {
+          return data.datasets[tooltipItem.datasetIndex].label + ': ' + epoch_to_hh_mm_ss(tooltipItem.yLabel)
+        }
+      }
+    },
+  }
+
 }
 
 dateRangeCtrl.$inject = ['$scope'];
@@ -755,7 +872,7 @@ function usersTableCtrl($scope, $timeout, $http) {
   }).catch(function(response) {
     console.log('Error occurred:', response.status, response.data);
   }).finally(function() {
-     console.log("usersTableCtrl Task Finished.");
+     //console.log("usersTableCtrl Task Finished.");
   })
 
 /*

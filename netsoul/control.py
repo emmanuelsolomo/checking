@@ -50,8 +50,10 @@ class ControlManager(object):
         date_generated = [start + datetime.timedelta(days=x) for x in range(0, 7)]
         self.weekly_logs = []
         for date in date_generated:
+            #duration = self.getDailyLogs(date.strftime("%Y-%m-%d"))
             duration = self.getDailyLogs(date.strftime("%Y-%m-%d"))
-            self.weekly_logs.append(dict(duration=str(duration), date=date.date()))
+            self.weekly_logs.append(str(duration.total_seconds()))
+            #self.weekly_logs.append(dict(duration=str(duration), date=date.date()))
 
     def getMontlyLogs(self):
          print("In DailyLogs")

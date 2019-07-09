@@ -402,3 +402,30 @@ class ControlLogView(APIView):
       if(type == 'weekly'): 
         control.getWeeklyLogs(day)
       return JsonResponse(dict(logs=control.weekly_logs), safe=False)
+
+
+@csrf_exempt
+def controlLogs(request):
+    """
+    Return all nslog for a given user 
+    """
+    if request.method == 'GET':
+      if 'user' not in request.session:
+        sign_out(request)
+        return HttpResponseRedirect(reverse('home'))
+    if request.GET.get('type') == 'main':
+      email = request.session['user']['email']
+    else:
+      email = request.GET.get('email')
+    if request.GET.get('day') == 'today':
+      day =  str(datetime.date.today())
+    else:
+      day =  request.GET.get('day')
+    print("in controlLogs ")
+    print(day)
+    ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[-1].strip()
+    control = ControlManager(email, ip) 
+    control.getWeeklyLogs(day)
+    final = [  ]
+    return JsonResponse(control.weekly_logs, safe=False)
+
