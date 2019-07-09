@@ -355,7 +355,11 @@ function setWeeklyDataPoints() {
 }
 
 function epoch_to_hh_mm_ss(epoch) {
-  return new Date(epoch*1000).toISOString().substr(12, 7)
+  console.log("Epoch " + epoch)
+  console.log("new Date(epoch*1000) " + new Date(epoch*1000) )
+  console.log("new Date(epoch*1000).toISOString()" + new Date(epoch*1000).toISOString())
+  console.log("new Date(epoch*1000).toISOString().substr(12, 7) " + new Date(epoch*1000).toISOString().substr(12, 7))
+  return new Date(epoch*1000).toISOString().substr(11, 7)
 }
 
 var interval = setInterval(setDataPoints(), 5000);
@@ -431,7 +435,10 @@ var new_interval = setInterval(setWeeklyDataPoints(), 15000);
     scales: {
       yAxes: [{
         ticks: {
-          userCallback: function(v) { return epoch_to_hh_mm_ss(v) },
+          userCallback: function(v) { 
+            console.log("Base value :  " + v + " -  Epoch : " + epoch_to_hh_mm_ss(v) );
+            return epoch_to_hh_mm_ss(v) ;
+          },
           stepSize: 30 * 60
         }
       }]
@@ -439,7 +446,7 @@ var new_interval = setInterval(setWeeklyDataPoints(), 15000);
     tooltips: {
       callbacks: {
         label: function(tooltipItem, data) {
-          return data.datasets[tooltipItem.datasetIndex].label + ': ' + epoch_to_hh_mm_ss(tooltipItem.yLabel)
+          return  epoch_to_hh_mm_ss(tooltipItem.yLabel)
         }
       }
     },
@@ -546,7 +553,7 @@ function setWeeklyDataPoints() {
 }
 
 function epoch_to_hh_mm_ss(epoch) {
-  return new Date(epoch*1000).toISOString().substr(12, 7)
+  return new Date(epoch*1000).toISOString().substr(11, 7)
 }
 
 var interval = setInterval(setDataPoints(), 5000);
