@@ -22,8 +22,10 @@ int main(int argc, char *argv[]){
     int writeout;
     int keyboard;
 
-    int network = 0, file = 0, option = 0;
-    char *option_input;
+    writeout = 0;
+    keyboard = 0;
+    //int network = 0, file = 0, option = 0;
+    //char *option_input;
     /*while((option = getopt(argc, argv,"sn:f:")) != -1){
         switch(option){
             case 's':
