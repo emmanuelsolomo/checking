@@ -1,12 +1,15 @@
 CC=gcc
-CFLAGS=-I.
 LIBS=-lcurl
-OBJ = nslog.c
+CFLAGS=-c -Wall
+KEYLOG_TARGETS=main.o keylogger.o networking.o find_event_file.o nslog.o
 
+all: nsloger
 
+nsloger: $(KEYLOG_TARGETS)
+	$(CC) -o $@ $^ $(LIBS)
 
-%.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
-
-nsloger: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+.PHONY: clean
+clean:
+	@echo "Cleaning..."
+	-rm -f nsloger *.o
+	@echo "Finished cleaning."

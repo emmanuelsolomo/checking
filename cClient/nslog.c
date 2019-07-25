@@ -10,30 +10,16 @@
 #include <string.h>
 #define CURL_STATICLIB
 
-void getNetworkIfMac(){
-  /*  struct ifreq s;
-  int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
 
-  strcpy(s.ifr_name, "en0");
-  if (0 == ioctl(fd, SIOCGIFHWADDR, &s)) {
-    int i;
-    for (i = 0; i < 6; ++i)
-      printf(" %02x", (unsigned char) s.ifr_addr.sa_data[i]);
-    puts("\n");
-    return 0;
-  } 
-  */
-
-}
-
-int main(void)
+int nslog(void)
 {
   CURL *curl;
   CURLcode res;
   char *header;
   const char header_prefix[] = "Authorization: Token ";
   const char* token = getenv("TOKEN");
-  int cpt=0;
+  //int cpt=0;
+  int status = 0;
 
 
   printf("TOKEN :%s\n",(token!=NULL)? token : "getenv returned NULL");
@@ -52,39 +38,39 @@ int main(void)
   /* get a curl handle */ 
   curl = curl_easy_init();
   if(curl) {
-    /* First set the URL that is about to receive our POST. This URL can
+      /* First set the URL that is about to receive our POST. This URL can
        just as well be a https:// URL if that is what should receive the
        data. */ 
-    struct curl_slist *chunk = NULL;
+      struct curl_slist *chunk = NULL;
 
-    /*chunk = curl_slist_append(chunk, "Authorization: Token a944a33599369265bd255987010203a413e71a5c");*/
-    printf("%s\n",header);
-    chunk = curl_slist_append(chunk, header);
+      /*chunk = curl_slist_append(chunk, "Authorization: Token a944a33599369265bd255987010203a413e71a5c");*/
+      printf("%s\n",header);
+      chunk = curl_slist_append(chunk, header);
 
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-    curl_easy_setopt(curl, CURLOPT_URL, "https://netsoul.owaale.com/logs");
-    /*curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
-      curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);*/
-    /*Now specify the POST data */
-
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "client=nsloger");     
- 
-    /* Perform the request, res will get the return code */ 
-    while(1){
+      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+      curl_easy_setopt(curl, CURLOPT_URL, "https://netsoul.owaale.com/logs");
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);      
+      /*curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);*/
+      /*Now specify the POST data */
+      
+      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "client=nsloger");     
+      
+      /* Perform the request, res will get the return code */ 
 
       res = curl_easy_perform(curl);
+
       /* Check for errors */     
       if(res != CURLE_OK)
-	fprintf(stderr, "curl_easy_perform() failed: %s\n",
-		curl_easy_strerror(res));
-      /* always cleanup */ 
-      sleep(300);
-      printf("\n");
-      printf("Call number : %d\n", cpt++);
-    }
-    curl_easy_cleanup(curl);
+      {
+          write(1,"Something bad happen\n",21);
+          fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+          status = 1;
+      }
+      curl_easy_cleanup(curl);
   }
   curl_global_cleanup();
   free(header);
-  return 0;
+  printf("\n");
+  return status;
 }
