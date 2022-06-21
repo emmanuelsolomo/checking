@@ -5,7 +5,7 @@ django-cors-headers==3.0.1
 django-user-agents==0.3.2
 djangorestframework==3.9.4
 idna==2.8
-numpy==1.16.3
+numpy==1.22.0
 oauthlib==3.0.1
 pandas==0.24.2
 pip==19.1.1
